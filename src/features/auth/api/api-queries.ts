@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { clientSignUp, lawyerSignUp, signIn } from "./api-services";
 import { IApiBaseResponse } from "@/types";
@@ -39,11 +39,14 @@ export const useClientRegisterMutation = () => {
 
 export const useLawyerRegisterMutation = () => {
   const { initializeAuth } = useAuthContext();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: lawyerSignUp,
     onSuccess: (response) => {
       localStorage.setItem("token", response.data.token);
       initializeAuth();
+      queryClient.invalidateQueries(["getLawyers"]);
       dialogClose();
       toast.success("Registered successfully");
     },
