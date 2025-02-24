@@ -9,6 +9,12 @@ export const getCases = (): Promise<{
   return api.get(`/case/list`);
 };
 
+export const getMyCases = (): Promise<{
+  data: {cases:ICase[]};
+}> => {
+  return api.get(`/case/my-cases`);
+};
+
 
 export const addCase = (
   data: ICaseForm & { client_id: number }
