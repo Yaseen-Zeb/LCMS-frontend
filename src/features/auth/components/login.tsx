@@ -13,15 +13,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormDV, LogInFormSchema, ILoginForm } from "../api/schema";
 import { useSignInMutation } from "../api/api-queries";
 import { DialogFooter } from "@/components/ui/dialog";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 
 const Login = ({
-  setIsOpen,
+  setIsAuthDialogOpen,
   setTab,
 }: {
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
   setTab: Dispatch<SetStateAction<string>>;
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm<ILoginForm>({
     resolver: zodResolver(LogInFormSchema),
     defaultValues: LoginFormDV,
@@ -65,18 +68,35 @@ const Login = ({
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="********" {...field} />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="********"
+                    {...field}
+                    className="pr-10" // Ensure space for the icon
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-3 flex items-center"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <Eye className="text-gray-500" size={18} />
+                    ) : (
+                      <EyeClosed className="text-gray-500" size={18} />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <DialogFooter>
           <Button
             variant="outline"
             type="button"
-            onClick={() => setIsOpen(false)}
+            onClick={() => setIsAuthDialogOpen(false)}
           >
             Cancel
           </Button>

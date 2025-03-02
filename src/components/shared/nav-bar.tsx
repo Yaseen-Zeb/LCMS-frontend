@@ -15,11 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useAuthContext } from "@/providers/auth-provider";
+import { Separator } from "../ui/separator";
 
 const NavBar = () => {
   const { user, logout, requireAuth } = useAuthContext();
-
-  console.log(user);
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-nav text-base  text-white">
@@ -56,7 +55,7 @@ const NavBar = () => {
             <li>Lawyers</li>
           </NavLink>
           <NavLink
-            to={"./funding-programs"}
+            to={"./about-us"}
             className="font-medium h-10 hover:bg-primary transition-all duration-150  p-2 py-1 rounded-sm flex items-center self-center   whitespace-nowrap dark:text-white"
           >
             <li>About Us</li>
@@ -82,12 +81,25 @@ const NavBar = () => {
             <DropdownMenuTrigger asChild>
               <div className="flex items-center gap-1 cursor-pointer">
                 <CircleUserRound size={33} />
+                {user && (
+                  <div className="flex flex-col">
+                    <span className="text-xs capitalize">
+                      {user?.name
+                        ? user.name.substring(0, 5) +
+                          (user.name.length > 5 ? "..." : "")
+                        : ""}
+                    </span>
+
+                    <Separator />
+                    <span className="text-xs capitalize">{user?.role}</span>
+                  </div>
+                )}
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48 absolute top-2 left-[-127px]">
               {user ? (
                 <>
-                  <Link to={"/profile"}>
+                  <Link to={`/${user.role}/profile`}>
                     <DropdownMenuItem className="cursor-pointer text-primary">
                       <UserRound /> Profile Details
                     </DropdownMenuItem>

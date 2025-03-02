@@ -1,87 +1,27 @@
+import NoDataFound from "@/components/shared/no-data-found";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-
+import { useAuthContext } from "@/providers/auth-provider";
+import { ICase } from "@/types";
 import {
   ArrowUpNarrowWide,
   BadgePercent,
   Blocks,
-  ChevronDown,
   DollarSign,
   Eye,
   MapPin,
-  Search,
 } from "lucide-react";
-import Loader from "@/components/ui/loader";
-import { useGetCases } from "../api/api-queries";
-import NoDataFound from "@/components/shared/no-data-found";
 import { Link } from "react-router-dom";
-import ApiResponseError from "@/components/shared/api-response-error";
-import { useAuthContext } from "@/providers/auth-provider";
 
-const CasesList = () => {
-  const { user, handleBidAuthModal } = useAuthContext();
-  const { data, isLoading, isError } = useGetCases();
+const ClosedCases = ({ closedCases }: { closedCases: ICase[] }) => {
+  const {user} = useAuthContext()
   return (
     <>
-      <h3 className="text-xl font-semibold">Legal Cases</h3>
-      <div className="flex gap-6 my-3">
-        <div className="flex flex-col  gap-2">
-          <div className="flex max-w-md w-[600px]">
-            <Input
-              type="text"
-              placeholder="Search lagal cases"
-              className="flex-1 border-gray-300  h-10 border-r-0 rounded-br-none rounded-tr-none focus:outline-none"
-            />
-            <Button
-              variant="default"
-              className="bg-primary rounded-bl-none rounded-tl-none text-white h-10"
-            >
-              <Search className="h-4 w-4" />
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-2 w-full">
-            {["Region", "Sector", "Status"].map((filter) => (
-              <DropdownMenu key={filter}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="text-gray-700 border-gray-300 flex items-center gap-0"
-                  >
-                    {filter} <ChevronDown className="h-4 w-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-48">
-                  <DropdownMenuItem>Option 1</DropdownMenuItem>
-                  <DropdownMenuItem>Option 2</DropdownMenuItem>
-                  <DropdownMenuItem>Option 3</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {isLoading ? (
-        <Loader />
-      ) : !data?.data.length ? (
-        isError ? (
-          <ApiResponseError />
-        ) : (
-          <NoDataFound />
-        )
-      ) : (
-        <div className="grid grid-cols-3 gap-4">
-          {data?.data?.map((caseItem, index) => (
+      {closedCases.length ? (
+        <div className="grid grid-cols-2 gap-4">
+          {closedCases?.map((caseItem, index) => (
             <Card
               key={index}
               className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden mt-4"
@@ -174,38 +114,38 @@ const CasesList = () => {
                 </div>
 
                 <Separator />
-                <div
-                  className={`grid  justify-between text-sm gap-3 ${
-                    user?.role == "client" ? "grid-cols-1" : "grid-cols-2"
-                  }`}
-                >
-                  {user?.role != "client" && (
-                    <Button
-                      className="flex gap-1 h-6 w-full"
-                      variant={"outline"}
-                      onClick={() => handleBidAuthModal(caseItem.id)}
-                    >
-                      <BadgePercent />
-                      Bid
-                    </Button>
-                  )}
-                  <Link to={`/case/detail/${caseItem.id}`} className="w-full">
-                    <Button
-                      className="flex gap-1 h-6 w-full"
-                      variant={"outline"}
-                    >
-                      <Eye />
-                      {user?.role === "client" ? "View Case Details" : "View"}
-                    </Button>
-                  </Link>
-                </div>
+                <div className={`grid  justify-between text-sm gap-3 ${user?.role == "client" ? "grid-cols-1" : "grid-cols-2"  }`}>
+                                     {user?.role != "client" && (
+                                       <Button
+                                         className="flex gap-1 h-6 w-full"
+                                         variant={"outline"}
+                                       >
+                                         <BadgePercent />
+                                         Bid
+                                       </Button>
+                                     )}
+                                     <Link
+                                       to={`/case/detail/${caseItem.id}`}
+                                       className="w-full"
+                                     >
+                                       <Button
+                                         className="flex gap-1 h-6 w-full"
+                                         variant={"outline"}
+                                       >
+                                         <Eye />
+                                         {user?.role === "client" ?"View Case Details" :"View"}
+                                       </Button>
+                                     </Link>
+                                   </div>
               </CardContent>
             </Card>
           ))}
         </div>
+      ) : (
+        <NoDataFound className="mt-4" text="No cases have been closed for this client yet." />
       )}
     </>
   );
 };
 
-export default CasesList;
+export default ClosedCases;

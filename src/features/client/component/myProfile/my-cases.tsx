@@ -1,11 +1,8 @@
-import { useGetMyCases } from "@/features/case/api/api-queries";
 import CaseForm from "@/features/case/components/case-form";
-import Loader from "@/components/ui/loader"; // Ensure you have a loader component
-import NoDataFound from "@/components/shared/no-data-found"; // Ensure you have a no-data component
+import NoDataFound from "@/components/shared/no-data-found";
+import { ICase } from "@/types";
 
-const MyCases = () => {
-  const { data, isLoading } = useGetMyCases();
-
+const MyCases = ({ cases }: { cases: ICase[] }) => {
   return (
     <>
       <div className="flex justify-between items-center mb-3">
@@ -13,10 +10,8 @@ const MyCases = () => {
         <CaseForm />
       </div>
 
-      <div className="relative overflow-x-auto border rounded-sm">
-        {isLoading ? (
-          <Loader />
-        ) : data?.data.cases.length ? (
+      {cases.length ? (
+        <div className="relative overflow-x-auto border rounded-sm">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-gray-600 font-semibold bg-gray-100">
               <tr>
@@ -35,16 +30,14 @@ const MyCases = () => {
                 <td scope="col" className="px-6 py-3 whitespace-nowrap">
                   Budget Type
                 </td>
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Views
-                </td>
+                
                 <td scope="col" className="px-6 py-3 whitespace-nowrap">
                   Actions
                 </td>
               </tr>
             </thead>
             <tbody>
-              {data.data.cases.map((caseItem, index) => (
+              {cases.map((caseItem, index) => (
                 <tr key={caseItem.id || index}>
                   <td className="px-6 py-4">
                     {" "}
@@ -83,7 +76,6 @@ const MyCases = () => {
                       : "N/A"}
                   </td>
                   <td className="px-6 py-4">{caseItem.budget_type || "N/A"}</td>
-                  <td className="px-6 py-4">{3}</td>
                   <td className="px-6 py-4">
                     {/* Placeholder for action buttons */}
                     <button className="text-blue-500 hover:underline">
@@ -98,10 +90,10 @@ const MyCases = () => {
               ))}
             </tbody>
           </table>
-        ) : (
-          <NoDataFound />
-        )}
-      </div>
+        </div>
+      ) : (
+        <NoDataFound />
+      )}
     </>
   );
 };

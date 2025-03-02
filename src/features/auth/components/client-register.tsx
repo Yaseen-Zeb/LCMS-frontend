@@ -16,14 +16,17 @@ import {
   ClientRegisterFormSchema,
   IClientRegisterForm,
 } from "../api/schema";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useClientRegisterMutation } from "../api/api-queries";
+import { Eye, EyeClosed } from "lucide-react";
 
 const ClientRegisterForm = ({
-  setIsOpen,
+  setIsAuthDialogOpen,
 }: {
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm<IClientRegisterForm>({
     resolver: zodResolver(ClientRegisterFormSchema),
     defaultValues: ClientRegisterFormDV,
@@ -82,11 +85,25 @@ const ClientRegisterForm = ({
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter a secure password"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="********"
+                      {...field}
+                      className="pr-10" // Ensure space for the icon
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-3 flex items-center"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? (
+                        <Eye className="text-gray-500" size={18} />
+                      ) : (
+                        <EyeClosed className="text-gray-500" size={18} />
+                      )}
+                    </button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -131,7 +148,7 @@ const ClientRegisterForm = ({
             <Button
               variant="outline"
               type="button"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsAuthDialogOpen(false)}
             >
               Cancel
             </Button>

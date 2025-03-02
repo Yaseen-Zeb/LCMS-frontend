@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import UserProfile from "./user-profile";
-import MyCases from "./my-cases";
+import MyBids from "./my-bids";
 
 const Profile = () => {
   return (
@@ -13,18 +13,19 @@ const Profile = () => {
           >
             My Profile
           </TabsTrigger>
+
           <TabsTrigger
-            value="company-profile"
+            value="bids"
             className="text-gray-500 data-[state=active]:text-primary data-[state=active]:shadow-none font-medium border-b-2 border-white rounded-none data-[state=active]:border-blue-600"
           >
-            My Cases
+            My Bids
           </TabsTrigger>
         </TabsList>
         <TabsContent value="user-profile" className="mt-4 p-4 pt-0">
           <UserProfile />
         </TabsContent>
-        <TabsContent value="company-profile" className="mt-4 p-4 pt-0">
-          < MyCases/>
+        <TabsContent value="bids" className="mt-4 p-4 pt-0">
+          <MyBids />
         </TabsContent>
       </Tabs>
     </div>

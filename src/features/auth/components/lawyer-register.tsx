@@ -16,16 +16,19 @@ import {
   LawyerRegisterFormDV,
   LawyerRegisterFormSchema,
 } from "../api/schema";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useLawyerRegisterMutation } from "../api/api-queries";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { EXPERTISE_AREAS } from "@/utils/constant";
+import { Eye, EyeClosed } from "lucide-react";
 
 const LawyerRegisterForm = ({
-  setIsOpen,
+  setIsAuthDialogOpen,
 }: {
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+      const [showPassword, setShowPassword] = useState(false);
+  
   const form = useForm<ILawyerRegisterForm>({
     resolver: zodResolver(LawyerRegisterFormSchema),
     defaultValues: LawyerRegisterFormDV,
@@ -80,24 +83,33 @@ const LawyerRegisterForm = ({
             )}
           />
 
-          {/* Password Field */}
           <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <div className="relative">
                   <Input
-                    type="password"
-                    placeholder="Enter a secure password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="********"
                     {...field}
+                    className="pr-10" // Ensure space for the icon
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-3 flex items-center"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? <Eye className="text-gray-500" size={18} /> : <EyeClosed className="text-gray-500" size={18} />}
+                  </button>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
           {/* Phone Number Field */}
           <FormField
@@ -175,7 +187,7 @@ const LawyerRegisterForm = ({
             <Button
               variant="outline"
               type="button"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsAuthDialogOpen(false)}
             >
               Cancel
             </Button>

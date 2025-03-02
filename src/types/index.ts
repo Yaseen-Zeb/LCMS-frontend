@@ -14,6 +14,8 @@ export type IContext = {
   initializeAuth: () => void;
   logout: () => void;
   requireAuth: () => void;
+  handleBidAuthModal: (id: number) => void;
+  bidCaseId: number | null;
 };
 
 export type BaseEntity = {
@@ -31,6 +33,7 @@ export type ICase = {
   budget_type: string;
   budget_amount: number;
   location: string;
+  status: string;
 } & BaseEntity;
 
 export type IUser = {
@@ -38,8 +41,15 @@ export type IUser = {
   email: string;
   phone_number: string;
   address: string;
-  specialization: string[];
-  experience: number;
+  specialization?: string[];
+  experience?: number;
+} & BaseEntity;
+
+export type IBid = {
+  description: string;
+  bid_status: string;
+  client_id: number;
+  lawyer_is: number;
 } & BaseEntity;
 
 export type IApiBaseResponse = {

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { clientSignUp, lawyerSignUp, signIn } from "./api-services";
+import { changePassword, clientSignUp, lawyerSignUp, signIn } from "./api-services";
 import { IApiBaseResponse } from "@/types";
 import { useAuthContext } from "@/providers/auth-provider";
 import { dialogClose } from "@/components/ui/dialog";
@@ -49,6 +49,19 @@ export const useLawyerRegisterMutation = () => {
       queryClient.invalidateQueries(["getLawyers"]);
       dialogClose();
       toast.success("Registered successfully");
+    },
+    onError: (error: IApiBaseResponse) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+export const useChangePasswordMutation = () => {
+  return useMutation({
+    mutationFn: changePassword,
+    onSuccess: () => {
+      dialogClose();
+      toast.success("Password changed successfully");
     },
     onError: (error: IApiBaseResponse) => {
       toast.error(error.message);

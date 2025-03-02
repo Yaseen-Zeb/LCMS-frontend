@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import BiddingForm from "@/features/bidding/components/bidding-form";
 
 const AuthContext = createContext<IContext | null>(null);
 
@@ -12,6 +13,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<IContextUser | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showBidModal, setShowBidModal] = useState(false);
+  const [bidCaseId, setBidCaseId] = useState<number | null>(null);
+
 
   // ✅ Load token from localStorage and decode it to set user details
   useEffect(() => {
@@ -48,17 +52,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return <Navigate to={"/sign-in"} />;
   };
 
-  // ✅ Show login modal if authentication is required
+
   const requireAuth = () => {
     if (!user) {
       setShowLoginModal(true);
     }
   };
+  const handleBidAuthModal = (id: number) => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+  
+    setBidCaseId(id);
+    setShowBidModal(true);
+  };
+  
 
   return (
-    <AuthContext.Provider value={{ user, initializeAuth, logout, requireAuth }}>
+    <AuthContext.Provider value={{ user, initializeAuth, logout, requireAuth, handleBidAuthModal,bidCaseId }}>
       {children}
-      <AuthDialog isOpen={showLoginModal} setIsOpen={setShowLoginModal} />
+      <AuthDialog
+        isAuthDialogOpen={showLoginModal}
+        setIsAuthDialogOpen={setShowLoginModal}
+      />
+      <BiddingForm
+        isBidFormOpen={showBidModal}
+        setIsBidFormOpen={setShowBidModal}
+      />
     </AuthContext.Provider>
   );
 };

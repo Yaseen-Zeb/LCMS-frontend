@@ -21,10 +21,11 @@ import {
 import { useGetLawyers } from "../api/api-queries";
 import Loader from "@/components/ui/loader";
 import NoDataFound from "@/components/shared/no-data-found";
+import ApiResponseError from "@/components/shared/api-response-error";
+import { Link } from "react-router-dom";
 
 const LawyersList = () => {
-  
-  const { data, isLoading } = useGetLawyers();
+  const { data, isLoading, isError } = useGetLawyers();
 
   return (
     <>
@@ -69,18 +70,20 @@ const LawyersList = () => {
 
       {isLoading ? (
         <Loader />
-      ) : data?.data.lawyers.length ? (
+      ) : data?.data.length ? (
         <div className="grid grid-cols-3 gap-4">
-          {data.data.lawyers.map((lawyer, index) => (
+          {data.data.map((lawyer, index) => (
             <Card
               key={lawyer.id || index}
               className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden mt-4"
             >
               <CardHeader>
+              <Link to={`/lawyer/profile/${lawyer.id}`}>
                 <CardTitle className="text-lg font-medium items-center text-primary mb-2 flex gap-2">
                   <CircleUserRound size={35} className="text-gray-500" />
                   <span>{lawyer.name}</span>
                 </CardTitle>
+                </Link>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Separator className="w-[300px] m-auto" />
@@ -147,16 +150,20 @@ const LawyersList = () => {
                     <span>{lawyer.experience} years</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Button variant={"outline"} className="h-6 flex gap-1">
-                      <Eye />
-                      View Profile
-                    </Button>
+                    <Link to={`/lawyer/profile/${lawyer.id}`}>
+                      <Button variant={"outline"} className="h-6 flex gap-1">
+                        <Eye />
+                        View Profile
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+      ) : isError ? (
+        <ApiResponseError />
       ) : (
         <NoDataFound />
       )}

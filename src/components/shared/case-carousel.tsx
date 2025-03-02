@@ -22,6 +22,7 @@ import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
 import { ICase } from "@/types";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "@/providers/auth-provider";
 
 export function CaseCarousel({
   delay,
@@ -32,6 +33,7 @@ export function CaseCarousel({
   data?: ICase[];
   limit: number;
 }) {
+  const { user, handleBidAuthModal } = useAuthContext();
   const autoplayInstance = React.useRef(
     Autoplay({ delay, stopOnInteraction: true })
   );
@@ -59,26 +61,28 @@ export function CaseCarousel({
                   className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden mt-4"
                 >
                   <CardHeader>
-                    <CardTitle className="text-lg font-medium text-primary mb-2">
-                      <span>
-                        {caseItem.title.length > 43 ? (
-                          <>
-                            {caseItem.title.substring(0, 43)}
-                            <b> ...</b>
-                          </>
-                        ) : (
-                          caseItem.title
-                        )}
-                      </span>
-                    </CardTitle>
+                    <Link to={`/case/detail/${caseItem.id}`}>
+                      <CardTitle className="text-lg font-medium text-primary mb-2">
+                        <span>
+                          {caseItem.title.length > 30 ? (
+                            <>
+                              {caseItem.title.substring(0, 30)}
+                              <b> ...</b>
+                            </>
+                          ) : (
+                            caseItem.title
+                          )}
+                        </span>
+                      </CardTitle>
+                    </Link>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {/* Description */}
                     <div>
                       <p className="text-sm text-gray-600 h-[39px]">
-                        {caseItem.description.length > 117 ? (
+                        {caseItem.description.length > 80 ? (
                           <>
-                            {caseItem.description.substring(0, 117)}
+                            {caseItem.description.substring(0, 80)}
                             <b> ...</b>
                           </>
                         ) : (
@@ -108,9 +112,9 @@ export function CaseCarousel({
                       <div className="flex items-center gap-1">
                         <MapPin size={16} className="text-gray-500" />
                         <span>
-                          {caseItem.location.length > 35 ? (
+                          {caseItem.location.length > 25 ? (
                             <>
-                              {caseItem.location.substring(0, 35)}
+                              {caseItem.location.substring(0, 25)}
                               <b> ...</b>
                             </>
                           ) : (
@@ -137,11 +141,11 @@ export function CaseCarousel({
                         caseItem.expertise_required.length > 0 ? (
                           <>
                             {caseItem.expertise_required.join(", ").length >
-                            47 ? (
+                            25 ? (
                               <>
                                 {caseItem.expertise_required
                                   .join(", ")
-                                  .substring(0, 47)}
+                                  .substring(0, 25)}
                                 <b> ...</b>
                               </>
                             ) : (
@@ -155,21 +159,35 @@ export function CaseCarousel({
                     </div>
 
                     <Separator />
-                    <div className="flex justify-between text-sm gap-3">
-                      <Button
-                        className="flex gap-1 h-6 w-1/2"
-                        variant={"outline"}
+                    <div
+                      className={`grid  justify-between text-sm gap-3 ${
+                        user?.role == "client" ? "grid-cols-1" : "grid-cols-2"
+                      }`}
+                    >
+                      {user?.role != "client" && (
+                        <Button
+                          className="flex gap-1 h-6 w-full"
+                          variant={"outline"}
+                          onClick={() => handleBidAuthModal(caseItem.id)}
+                        >
+                          <BadgePercent />
+                          Bid
+                        </Button>
+                      )}
+                      <Link
+                        to={`/case/detail/${caseItem.id}`}
+                        className="w-full"
                       >
-                        <BadgePercent />
-                        Bid
-                      </Button>
-                      <Button
-                        className="flex gap-1 h-6 w-1/2"
-                        variant={"outline"}
-                      >
-                        <Eye />
-                        View
-                      </Button>
+                        <Button
+                          className="flex gap-1 h-6 w-full"
+                          variant={"outline"}
+                        >
+                          <Eye />
+                          {user?.role === "client"
+                            ? "View Case Details"
+                            : "View"}
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>

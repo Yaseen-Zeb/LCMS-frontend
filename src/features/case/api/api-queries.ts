@@ -2,12 +2,19 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { IApiBaseResponse } from "@/types";
 import { dialogClose } from "@/components/ui/dialog";
-import { addCase, getCases, getMyCases } from "./api-services";
+import { addCase, getCaseDetail, getCases, getMyCases } from "./api-services";
 
 export const useGetCases = () => {
   return useQuery({
     queryKey: ["getCases"],
     queryFn: getCases,
+  });
+};
+
+export const useGetCaseDetail = (id:number) => {
+  return useQuery({
+    queryKey: ["getCaseDetail"],
+    queryFn: ()=>getCaseDetail(id),
   });
 };
 

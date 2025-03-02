@@ -68,3 +68,36 @@ export const ClientRegisterFormDV: IClientRegisterForm = {
   phone_number: "",
   address: "",
 };
+
+
+export const ChangePasswordFormSchema = z.object({
+  oldPassword: z
+    .string()
+    .min(1, "Please enter your current password.")
+    .min(5, "Password must be at least 5 characters long.")
+    .trim(),
+
+  newPassword: z
+    .string()
+    .min(1, "Please enter a new password.")
+    .min(5, "Password must be at least 5 characters long.")
+    .trim(),
+
+  confirmPassword: z
+    .string()
+    .min(1, "Please confirm your new password.")
+    .min(5, "Password must be at least 5 characters long.")
+    .trim(),
+})
+.refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords do not match.",
+  path: ["confirmPassword"],
+});
+
+export type IChangePasswordForm = z.infer<typeof ChangePasswordFormSchema>;
+
+export const ChangePasswordFormDV: IChangePasswordForm = {
+  oldPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+};

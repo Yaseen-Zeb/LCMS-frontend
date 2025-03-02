@@ -1,11 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
 import PageNotFound from "@/components/shared/page-not-found";
-import HomePage from "@/components/layouts/home-page";
+import HomePage from "@/components/pages/home";
 import ContentLayout from "@/components/layouts/content-layout";
 import CasesList from "@/features/case/components/cases-list";
 import LawyersList from "@/features/lawyer/components/lawyers-list";
-import Profile from "@/features/profile/components/profile";
+import MyClientProfile from "@/features/client/component/myProfile/profile";
 import RequireAuth from "@/components/layouts/require-auth";
+import CaseDetail from "@/features/case/components/case-detail";
+import LawyerProfile from "@/features/lawyer/components/lawyer-profile";
+import ClientProfile from "@/features/client/component/client-profile";
+import MyLawyerProfile from "@/features/lawyer/components/myProfile/profile";
 
 const AppRoutes = createBrowserRouter([
   // Home
@@ -13,21 +17,10 @@ const AppRoutes = createBrowserRouter([
     path: "/",
     element: <HomePage />,
   },
-
-  {
-    path: "/profile",
-    element: <ContentLayout />,
-    children: [
-      {
-        path: "",
-        element: (
-          <RequireAuth permittedRoles={["client", "lawyer"]}>
-            <Profile />
-          </RequireAuth>
-        ),
-      },
-    ],
-  },
+  // {
+  //   path: "/about-us",
+  //   element: <AboutUs />,
+  // },
 
   {
     path: "/case",
@@ -36,6 +29,29 @@ const AppRoutes = createBrowserRouter([
       {
         path: "list",
         element: <CasesList />,
+      },
+      {
+        path: "detail/:id",
+        element: <CaseDetail />,
+      },
+    ],
+  },
+
+  {
+    path: "/client",
+    element: <ContentLayout />,
+    children: [
+      {
+        path: "profile/:id",
+        element: <ClientProfile />,
+      },
+      {
+        path: "profile",
+        element: (
+          <RequireAuth permittedRoles={["client"]}>
+            <MyClientProfile />
+          </RequireAuth>
+        ),
       },
     ],
   },
@@ -47,6 +63,18 @@ const AppRoutes = createBrowserRouter([
       {
         path: "list",
         element: <LawyersList />,
+      },
+      {
+        path: "profile/:id",
+        element: <LawyerProfile />,
+      },
+      {
+        path: "profile",
+        element: (
+          <RequireAuth permittedRoles={["lawyer"]}>
+            <MyLawyerProfile />
+          </RequireAuth>
+        ),
       },
     ],
   },

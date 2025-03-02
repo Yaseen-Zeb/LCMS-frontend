@@ -8,10 +8,19 @@ import { useGetLawyers } from "@/features/lawyer/api/api-queries";
 import { CaseCarousel } from "../shared/case-carousel";
 import { LawyerCarousel } from "../shared/lawyer-carousel";
 import { Card, CardTitle } from "../ui/card";
+import ApiResponseError from "../shared/api-response-error";
 
-const HomePage = () => {
-  const { data: cases, isLoading: isCasesLoading } = useGetCases();
-  const { data: lawyers, isLoading: isLawyersLoading } = useGetLawyers();
+const Home = () => {
+  const {
+    data: cases,
+    isLoading: isCasesLoading,
+    isError: isCasesError,
+  } = useGetCases();
+  const {
+    data: lawyers,
+    isLoading: isLawyersLoading,
+    isError: isLawyersError,
+  } = useGetLawyers();
 
   return (
     <div className="text-gray-800 flex flex-col justify-center">
@@ -37,28 +46,24 @@ const HomePage = () => {
         <h3 className="text-center text-3xl font-medium ">Most Recent Cases</h3>
         {isCasesLoading ? (
           <Loader />
-        ) : cases?.data?.cases.length ? (
-          <CaseCarousel data={cases?.data?.cases} limit={3} delay={5000} />
+        ) : cases?.data.length ? (
+          <CaseCarousel data={cases?.data} limit={3} delay={5000} />
         ) : (
           <Card className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden mt-4 mb-8">
             <CardTitle className="text-lg font-medium  text-primary gap-2 flex items-center justify-center">
-              <NoDataFound />
+              {isCasesError ? <ApiResponseError /> : <NoDataFound />}
             </CardTitle>
           </Card>
         )}
         <h3 className="text-center text-3xl font-medium ">Popular Lawyers</h3>
         {isLawyersLoading ? (
           <Loader />
-        ) : lawyers?.data?.lawyers.length ? (
-          <LawyerCarousel
-            data={lawyers?.data?.lawyers}
-            limit={3}
-            delay={5000}
-          />
+        ) : lawyers?.data.length ? (
+          <LawyerCarousel data={lawyers?.data} limit={3} delay={5000} />
         ) : (
           <Card className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden mt-4 mb-8">
             <CardTitle className="text-lg font-medium  text-primary gap-2 flex items-center justify-center">
-              <NoDataFound />
+              {isLawyersError ? <ApiResponseError /> : <NoDataFound />}
             </CardTitle>
           </Card>
         )}
@@ -68,4 +73,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

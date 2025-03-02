@@ -226,7 +226,7 @@ const CaseForm = () => {
               name="budget_amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Budget in PKR</FormLabel>
+                  <FormLabel>Budget in USD</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

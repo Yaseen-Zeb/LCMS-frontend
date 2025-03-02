@@ -4,10 +4,10 @@ import ClientRegisterForm from "./client-register";
 import LawyerRegisterForm from "./lawyer-register";
 
 function Register({
-  setIsOpen,
+  setIsAuthDialogOpen,
   setTab,
 }: {
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
   setTab: Dispatch<SetStateAction<string>>;
 }) {
   return (
@@ -17,17 +17,21 @@ function Register({
         <TabsTrigger value="lawyer">Lawyer</TabsTrigger>
       </TabsList>
       <TabsContent value="client">
-      <ClientRegisterForm setIsOpen={setIsOpen}/>
+        <ClientRegisterForm setIsAuthDialogOpen={setIsAuthDialogOpen} />
       </TabsContent>
       <TabsContent value="lawyer">
-      <LawyerRegisterForm setIsOpen={setIsOpen} />
+        <LawyerRegisterForm setIsAuthDialogOpen={setIsAuthDialogOpen} />
       </TabsContent>
-      <p className="text-sm text-start mt-2"> 
-          Already have an account?{" "}
-          <button type="button" className="text-primary underline" onClick={() => setTab("login")}>
-            Login here
-          </button>
-        </p>
+      <p className="text-sm text-start mt-2">
+        Already have an account?{" "}
+        <button
+          type="button"
+          className="text-primary underline"
+          onClick={() => setTab("login")}
+        >
+          Login here
+        </button>
+      </p>
     </Tabs>
   );
 }

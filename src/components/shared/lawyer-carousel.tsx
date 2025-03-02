@@ -57,10 +57,20 @@ export function LawyerCarousel({
                   className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden mt-4"
                 >
                   <CardHeader>
+                  <Link to={`/lawyer/profile/${lawyerItem.id}`}>
+
                     <CardTitle className="text-lg font-medium items-center text-primary mb-2 flex gap-2">
                       <CircleUserRound size={35} className="text-gray-500" />
-                      <span>{lawyerItem.name}</span>
+                      {lawyerItem.name.length > 30 ? (
+                            <>
+                              {lawyerItem.name.substring(0, 30)}
+                              <b> ...</b>
+                            </>
+                          ) : (
+                            lawyerItem.name
+                          )}
                     </CardTitle>
+                    </Link>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <Separator className="w-[300px] m-auto" />
@@ -83,9 +93,9 @@ export function LawyerCarousel({
                                     ); // Parse if it's a string
 
                                 const specText = specArray.join(", ");
-                                return specText.length > 36 ? (
+                                return specText.length > 25 ? (
                                   <>
-                                    {specText.substring(0, 36)}
+                                    {specText.substring(0, 25)}
                                     <b> ...</b>
                                   </>
                                 ) : (
@@ -107,9 +117,9 @@ export function LawyerCarousel({
                           Address:
                         </span>
                         <span>
-                          {lawyerItem.address.length > 39 ? (
+                          {lawyerItem.address.length > 25 ? (
                             <>
-                              {lawyerItem.address.substring(0, 39)}
+                              {lawyerItem.address.substring(0, 25)}
                               <b>...</b>
                             </>
                           ) : (
@@ -130,10 +140,12 @@ export function LawyerCarousel({
                         <span>{lawyerItem.experience} years</span>
                       </div>
                       <div className="flex items-center gap-1">
+                        <Link to={`/lawyer/profile/${lawyerItem.id}`}>
                         <Button variant={"outline"} className="h-6 flex gap-1">
                           <Eye />
                           View Profile
                         </Button>
+                        </Link>
                       </div>
                     </div>
                   </CardContent>
