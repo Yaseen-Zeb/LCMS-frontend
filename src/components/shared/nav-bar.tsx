@@ -1,13 +1,6 @@
 import { logo } from "@/assets";
-import {
-  Bell,
-  CircleUserRound,
-  LogIn,
-  LogOut,
-  Smile,
-  UserRound,
-} from "lucide-react";
-import { Link, NavLink } from "react-router-dom";
+import { CircleUserRound, LogIn, LogOut, Smile, UserRound } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,9 +9,11 @@ import {
 } from "../ui/dropdown-menu";
 import { useAuthContext } from "@/providers/auth-provider";
 import { Separator } from "../ui/separator";
+import { env } from "@/config/env";
 
 const NavBar = () => {
   const { user, logout, requireAuth } = useAuthContext();
+  const navigate = useNavigate();
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-nav text-base  text-white">
@@ -30,7 +25,7 @@ const NavBar = () => {
           <Link to={"/"} className="flex items-center space-x-1 mr-12">
             <img src={logo} className="h-[36px]" alt="Flowbite Logo" />
             <span className="self-center text-2xl text-yellow-400  font-bold whitespace-nowrap dark:text-white">
-              LCMS
+              LEGSER
             </span>
           </Link>
         </div>
@@ -54,33 +49,50 @@ const NavBar = () => {
           >
             <li>Lawyers</li>
           </NavLink>
+
+          {/* <NavLink
+            to={"/faq"}
+            className="font-medium h-10 hover:bg-primary transition-all duration-150  p-2 py-1 rounded-sm flex items-center self-center   whitespace-nowrap dark:text-white"
+          >
+            <li>FAQ</li>
+          </NavLink> */}
+         {user && <NavLink
+            to={"/chat"}
+            className="font-medium h-10 hover:bg-primary transition-all duration-150  p-2 py-1 rounded-sm flex items-center self-center   whitespace-nowrap dark:text-white"
+          >
+            <span>Chat</span>
+          </NavLink>}
+
           <NavLink
-            to={"./about-us"}
+            to={"/about-us"}
             className="font-medium h-10 hover:bg-primary transition-all duration-150  p-2 py-1 rounded-sm flex items-center self-center   whitespace-nowrap dark:text-white"
           >
             <li>About Us</li>
           </NavLink>
           <NavLink
-            to={"./faq"}
+            to={"/contact-us"}
             className="font-medium h-10 hover:bg-primary transition-all duration-150  p-2 py-1 rounded-sm flex items-center self-center   whitespace-nowrap dark:text-white"
           >
             <li>Contact Us</li>
           </NavLink>
-          <NavLink
-            to={"./faq"}
-            className="font-medium h-10 hover:bg-primary transition-all duration-150  p-2 py-1 rounded-sm flex items-center self-center   whitespace-nowrap dark:text-white"
-          >
-            <li>FAQ</li>
-          </NavLink>
         </ul>
 
         <div className="flex md:order-2 space-x-4 md:space-x-5 items-center">
-          <Bell className="cursor-pointer" />
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center gap-1 cursor-pointer">
-                <CircleUserRound size={33} />
+                {user?.profile_picture ? (
+                  <div className="w-9 h-9">
+                    <img
+                      src={`${env.VITE_APP_BASE_URL}/${user.profile_picture}`}
+                      alt="Profile Picture"
+                      className="w-full h-full rounded-full border"
+                    />
+                  </div>
+                ) : (
+                  <CircleUserRound size={33} />
+                )}
+
                 {user && (
                   <div className="flex flex-col">
                     <span className="text-xs capitalize">
@@ -99,16 +111,21 @@ const NavBar = () => {
             <DropdownMenuContent className="w-48 absolute top-2 left-[-127px]">
               {user ? (
                 <>
-                  <Link to={`/${user.role}/profile`}>
+                  <Link to={`/${user.role}/profile/${user.id}`}>
                     <DropdownMenuItem className="cursor-pointer text-primary">
-                      <UserRound /> Profile Details
+                      <div className="flex gap-1">
+                        <UserRound size={18} /> <span>Profile Details</span>
+                      </div>
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuItem
-                    onClick={() => logout()}
+                    onClick={() => {
+                      logout();
+                      navigate("/");
+                    }}
                     className="text-red-500 cursor-pointer"
                   >
-                    <LogOut className="rotate-180" /> Logout
+                    <LogOut size={18} /> Logout
                   </DropdownMenuItem>
                 </>
               ) : (

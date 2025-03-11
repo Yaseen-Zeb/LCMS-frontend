@@ -2,7 +2,6 @@ import AuthDialog from "@/features/auth/components/auth-dialog";
 import { IContext, IContextUser } from "@/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import BiddingForm from "@/features/bidding/components/bidding-form";
 
@@ -17,7 +16,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [bidCaseId, setBidCaseId] = useState<number | null>(null);
 
 
-  // ✅ Load token from localStorage and decode it to set user details
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -44,12 +42,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  // ✅ Logout: Remove token and reset user state
   const logout = () => {
     setUser(null);
     localStorage.removeItem("token");
     toast.success("Logout successful");
-    return <Navigate to={"/sign-in"} />;
   };
 
 

@@ -15,30 +15,27 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  ILawyerUpdateProfileForm,
-  LawyerProfileUpdateFormSchema,
-} from "../../../lawyer/api/schema";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { IUser } from "@/types";
-import { useLawyerUpdateProfileMutation } from "../../api/api-queries";
-import { EXPERTISE_AREAS } from "@/utils/constant";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { useClientUpdateProfileMutation } from "../api/api-queries";
+import { ClientProfileUpdateFormSchema, IClientUpdateProfileForm } from "../api/schema";
 
-const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
-  const form = useForm<ILawyerUpdateProfileForm>({
-    resolver: zodResolver(LawyerProfileUpdateFormSchema),
+const UpdateClientProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
+  const form = useForm<IClientUpdateProfileForm>({
+    resolver: zodResolver(ClientProfileUpdateFormSchema),
     defaultValues: oldDetalil,
   });
-  const lawyerUpdateProfileMutation = useLawyerUpdateProfileMutation();
+  const clientUpdateProfileMutation = useClientUpdateProfileMutation();
 
-  const onSubmit = (data: ILawyerUpdateProfileForm) => {
-    lawyerUpdateProfileMutation.mutate(data);
+  const onSubmit = (data: IClientUpdateProfileForm) => {
+    clientUpdateProfileMutation.mutate(data);
   };
+
   return (
-    <Dialog onOpenChange={() => form.reset(oldDetalil)}>
+    <Dialog onOpenChange={()=>form.reset()}>
       <DialogTrigger>
         {" "}
         <Button variant={"outline"} className="w-[170px] h-8">
@@ -110,45 +107,6 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
 
               <FormField
                 control={form.control}
-                name="specialization"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Specialization</FormLabel>
-                    <FormControl>
-                      <MultiSelect
-                        options={EXPERTISE_AREAS}
-                        onValueChange={field.onChange}
-                        placeholder={"Select specialization"}
-                        maxCount={2}
-                        className="w-full"
-                        defaultValue={field.value}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="experience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Years of Experience</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter years of experience"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="address"
                 render={({ field }) => (
                   <FormItem>
@@ -157,7 +115,6 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                       <Textarea
                         placeholder="Enter your full address"
                         {...field}
-                        rows={3}
                       />
                     </FormControl>
                     <FormMessage />
@@ -174,7 +131,7 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={lawyerUpdateProfileMutation.isLoading}
+                  disabled={clientUpdateProfileMutation.isLoading}
                 >
                   Update
                 </Button>
@@ -187,4 +144,4 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
   );
 };
 
-export default UpdateProfile;
+export default UpdateClientProfile;

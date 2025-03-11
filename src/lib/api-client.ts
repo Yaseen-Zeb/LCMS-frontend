@@ -24,12 +24,10 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    const status = error.response?.status || 500;
     const message =
       error.response?.data?.message || error.message || "Something went wrong";
 
     return Promise.reject({
-      status,
       message,
     });
   }

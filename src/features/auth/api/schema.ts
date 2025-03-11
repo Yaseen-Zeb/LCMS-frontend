@@ -1,4 +1,6 @@
 import { z } from "zod";
+const MAX_UPLOAD_SIZE = 3 * 1024 * 1024; // 3MB
+const ACCEPTED_FILE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
 
 export const LogInFormSchema = z.object({
   email: z
@@ -34,11 +36,16 @@ export const LawyerRegisterFormSchema = z.object({
     .min(1, "At least one specialization is required"),
   experience: z.coerce.number().min(0, "Experience must be a positive number"),
   address: z.string().min(5, "Address must be at least 5 characters"),
+  profile_picture: z
+    .instanceof(File, { message: "File is required" }) // Ensure it's a File instance
+    .refine((file) => file.size <= MAX_UPLOAD_SIZE, "File size must be less than 3MB")
+    .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), "File must be a PNG or JPG/JPEG"),
+  certificate: z.instanceof(File, { message: "Certificate file is required" }),
 });
 
 export type ILawyerRegisterForm = z.infer<typeof LawyerRegisterFormSchema>;
 
-export const LawyerRegisterFormDV: ILawyerRegisterForm = {
+export const LawyerRegisterFormDV: Partial<ILawyerRegisterForm> = {
   name: "",
   email: "",
   password: "",
@@ -46,7 +53,12 @@ export const LawyerRegisterFormDV: ILawyerRegisterForm = {
   specialization: [],
   experience: 0,
   address: "",
+  profile_picture: undefined,
+  certificate: undefined,
 };
+
+
+
 
 export const ClientRegisterFormSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -56,17 +68,22 @@ export const ClientRegisterFormSchema = z.object({
     .string()
     .regex(/^\d+$/, "Phone number must contain only digits")
     .min(10, "Must be at least 10 digits"),
-  address: z.string().min(1, "Address is required"), // Optional Address field
+  address: z.string().min(1, "Address is required"),
+  profile_picture: z
+    .instanceof(File, { message: "File is required" }) // Ensure it's a File instance
+    .refine((file) => file.size <= MAX_UPLOAD_SIZE, "File size must be less than 3MB")
+    .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), "File must be a PNG or JPG/JPEG"),
 });
 
 export type IClientRegisterForm = z.infer<typeof ClientRegisterFormSchema>;
 
-export const ClientRegisterFormDV: IClientRegisterForm = {
+export const ClientRegisterFormDV: Partial<IClientRegisterForm> = {
   name: "",
   email: "",
   password: "",
   phone_number: "",
   address: "",
+  profile_picture: undefined, 
 };
 
 

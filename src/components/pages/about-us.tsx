@@ -1,105 +1,110 @@
-import { banner } from "@/assets"
-import NavBar from "../shared/nav-bar"
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-  } from "@/components/ui/carousel";
-  import Autoplay from "embla-carousel-autoplay";
-  import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-  import { Separator } from "../ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import NavBar from "../shared/nav-bar";
+import Header from "../shared/header";
 import Footer from "../shared/footer";
-import { useRef } from "react";
 
 const AboutUs = () => {
-    const autoplayInstance = useRef(Autoplay({ delay:3000, stopOnInteraction: true }));
-
-    // Static content for each card
-    const aboutUsContent = [
-      {
-        title: "Connecting Clients & Lawyers",
-        description: "Our platform bridges the gap between clients needing legal assistance and lawyers looking for cases.",
-      },
-      {
-        title: "Post Legal Cases",
-        description: "Clients can easily post their legal issues, specify requirements, and receive bids from experienced lawyers.",
-      },
-      {
-        title: "Lawyers Bid on Cases",
-        description: "Qualified lawyers can browse available cases and place competitive bids to offer their services.",
-      },
-      {
-        title: "Secure Communication",
-        description: "Clients and lawyers can communicate securely through our platform to discuss case details and agreements.",
-      },
-      {
-        title: "Manage Cases Efficiently",
-        description: "Track case progress, manage bids, and finalize legal services all in one place.",
-      },
-      {
-        title: "Transparent & Fair Pricing",
-        description: "Clients can set budgets while lawyers provide competitive quotes, ensuring fair pricing for legal services.",
-      },
-    ];
   return (
     <div className="text-gray-800 flex flex-col justify-center">
       <NavBar />
-      <div
-        className="relative w-full h-[280px] bg-cover bg-center flex items-center shadow-lg"
-        style={{
-          backgroundImage: `url(${banner})`,
-          backgroundSize: "100% 100%",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="flex flex-col justify-center max-w-md text-white ml-10 sm:ml-20 lg:ml-44 space-2-4">
-          <h1 className="text-3xl font-bold text-yellow-400">Welcome!</h1>
-          <p className="text-md">
-            We prioritize transparency, delivering excellence and high-quality
-            solutions. Our focus on trust and security ensures the
-            confidentiality and protection of your sensitive data.
-          </p>
-        </div>
-      </div>
-      <div className="container m-auto pt-14">
-        <h3 className="text-center text-3xl font-medium ">Most Recent Cases</h3>
+      <Header />
+      <div className="container mx-auto p-6">
+        {/* Main Content */}
+        <Card className="shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] rounded-none p-6 bg-white">
+          <CardContent>
+            <div className="text-center">
+              <h1 className="text-2xl font-medium ">About Us</h1>
+              <p className="text-gray-600 mb-4">
+                Welcome to LEGSER, your trusted platform for legal services. Our
+                mission is to connect clients with experienced lawyers, ensuring
+                accessible, transparent, and efficient legal solutions.
+              </p>
+            </div>
 
-        <Carousel
-      className="relative w-full overflow-hidden pb-12"
-      plugins={[autoplayInstance.current]}
-      onMouseEnter={() => autoplayInstance.current.stop()}
-      onMouseLeave={() => autoplayInstance.current.play()}
-    >
-      <CarouselContent>
-        {aboutUsContent.map((item, index) => (
-          <CarouselItem key={index} className="md:basis-1/3 sm:basis-1/2 basis-full">
-            <Card className="bg-white shadow-md p-6 rounded-lg text-center">
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold text-primary">{item.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600">{item.description}</p>
-                <Separator className="my-3" />
-              </CardContent>
-            </Card>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
+            <div className="flex flex-col md:flex-row items-center mt-10">
+              <div className="md:flex-1 p-4">
+                <h2 className="text-xl font-medium">Our Mission</h2>
+                <p className="text-gray-600">
+                  We aim to simplify the process of finding legal assistance by
+                  providing a seamless, technology-driven platform. Whether
+                  you're a client seeking legal guidance or a lawyer looking to
+                  expand your reach, LEGSER empowers you with the right tools.
+                </p>
+              </div>
+              <div className="md:w-1/3">
+                <img
+                  src="https://www.shutterstock.com/image-photo/lawyers-provide-legal-advice-represent-600nw-2461343927.jpg"
+                  alt="Our Mission"
+                  width={500}
+                  height={300}
+                  className="rounded-lg w-full h-[250px]"
+                />
+              </div>
+            </div>
 
-      <div className="absolute left-[50%] bottom-10">
-        <CarouselPrevious />
-        <CarouselNext />
-      </div>
-    </Carousel>
+            {/* Why Choose Us Section */}
+            <div className="flex flex-col md:flex-row items-center mt-10">
+              <div className="md:w-1/3 ">
+                <img
+                  src="https://www.thepinnaclelist.com/wp-content/uploads/2021/05/real-estate-lawyer-handshake-deal.jpg"
+                  alt="Why Choose Us"
+                  width={500}
+                  height={300}
+                  className="rounded-lg w-full h-[250px]"
+                />
+              </div>
+              <div className="md:flex-1 p-4 md:pl-20">
+                <h2 className="text-xl font-medium">Why Choose Us?</h2>
+                <ul className="list-disc ml-6 text-gray-600">
+                  <li>
+                    Verified and experienced lawyers across multiple legal
+                    domains.
+                  </li>
+                  <li>Secure and confidential client-lawyer communication.</li>
+                  <li>Streamlined case posting and management system.</li>
+                  <li>
+                    Transparent reviews and ratings to help clients make
+                    informed decisions.
+                  </li>
+                </ul>
+              </div>
+            </div>
 
+            {/* Our Team Section */}
+            <div className="flex flex-col md:flex-row items-center mt-10">
+              <div className="md:flex-1 p-4">
+                <h2 className="text-xl font-medium">Our Team</h2>
+                <p className="text-gray-600">
+                  LEGSER is powered by a dedicated team of legal experts, tech
+                  professionals, and customer support specialists, all committed
+                  to making legal services more accessible.
+                </p>
+              </div>
+              <div className="md:w-1/3">
+                <img
+                  src="https://sierraeducationlaw.com/wp-content/uploads/2016/02/clovis-education-attorney.jpg"
+                  alt="Our Team"
+                  width={500}
+                  height={300}
+                  className="rounded-lg w-full h-[250px]"
+                />
+              </div>
+            </div>
 
-        
+            <div className="mb-8 mt-20 text-center space-y-2">
+              <h2 className="text-xl font-semibold ">Get in Touch</h2>
+              <p className="text-gray-600">
+                Have questions or need assistance? Reach out to our team today!
+              </p>
+              <Button variant={"outline"}>Contact Us</Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default AboutUs
+export default AboutUs;

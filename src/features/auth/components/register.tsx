@@ -12,7 +12,7 @@ function Register({
 }) {
   return (
     <Tabs defaultValue="client">
-      <TabsList className="grid w-full grid-cols-2 mt-5">
+      <TabsList className="grid w-full grid-cols-2 mt-5 px-1">
         <TabsTrigger value="client">Client</TabsTrigger>
         <TabsTrigger value="lawyer">Lawyer</TabsTrigger>
       </TabsList>

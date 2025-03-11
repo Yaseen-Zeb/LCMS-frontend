@@ -18,25 +18,27 @@ import { useForm } from "react-hook-form";
 import {
   ILawyerUpdateProfileForm,
   LawyerProfileUpdateFormSchema,
-} from "../../../lawyer/api/schema";
+} from "../api/schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { IUser } from "@/types";
-import { useclientUpdateProfileMutation } from "../../api/api-queries";
+import { useLawyerUpdateProfileMutation } from "../api/api-queries";
+import { EXPERTISE_AREAS } from "@/utils/constant";
+import { MultiSelect } from "@/components/ui/multi-select";
 
-const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
+const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
   const form = useForm<ILawyerUpdateProfileForm>({
     resolver: zodResolver(LawyerProfileUpdateFormSchema),
     defaultValues: oldDetalil,
   });
-  const clientUpdateProfileMutation = useclientUpdateProfileMutation();
+  const lawyerUpdateProfileMutation = useLawyerUpdateProfileMutation();
 
   const onSubmit = (data: ILawyerUpdateProfileForm) => {
-    clientUpdateProfileMutation.mutate(data);
+    lawyerUpdateProfileMutation.mutate(data);
   };
   return (
-    <Dialog onOpenChange={()=>form.reset()}>
+    <Dialog onOpenChange={() => form.reset(oldDetalil)}>
       <DialogTrigger>
         {" "}
         <Button variant={"outline"} className="w-[170px] h-8">
@@ -108,6 +110,45 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
 
               <FormField
                 control={form.control}
+                name="specialization"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Specialization</FormLabel>
+                    <FormControl>
+                      <MultiSelect
+                        options={EXPERTISE_AREAS}
+                        onValueChange={field.onChange}
+                        placeholder={"Select specialization"}
+                        maxCount={2}
+                        className="w-full"
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="experience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Years of Experience</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Enter years of experience"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="address"
                 render={({ field }) => (
                   <FormItem>
@@ -116,6 +157,7 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                       <Textarea
                         placeholder="Enter your full address"
                         {...field}
+                        rows={3}
                       />
                     </FormControl>
                     <FormMessage />
@@ -132,7 +174,7 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={clientUpdateProfileMutation.isLoading}
+                  disabled={lawyerUpdateProfileMutation.isLoading}
                 >
                   Update
                 </Button>
@@ -145,4 +187,4 @@ const UpdateProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
   );
 };
 
-export default UpdateProfile;
+export default UpdateLawyerProfile;

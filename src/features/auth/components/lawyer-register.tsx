@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Textarea } from "@/components/ui/textarea";
 import {
   ILawyerRegisterForm,
   LawyerRegisterFormDV,
@@ -18,8 +17,6 @@ import {
 } from "../api/schema";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useLawyerRegisterMutation } from "../api/api-queries";
-import { MultiSelect } from "@/components/ui/multi-select";
-import { EXPERTISE_AREAS } from "@/utils/constant";
 import { Eye, EyeClosed } from "lucide-react";
 
 const LawyerRegisterForm = ({
@@ -27,13 +24,32 @@ const LawyerRegisterForm = ({
 }: {
   setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-      const [showPassword, setShowPassword] = useState(false);
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [profilePreview, setProfilePreview] = useState<string | null>(null);
+  const [certificateFile, setCertificateFile] = useState<File | null>(null);
+
   const form = useForm<ILawyerRegisterForm>({
     resolver: zodResolver(LawyerRegisterFormSchema),
     defaultValues: LawyerRegisterFormDV,
   });
   const lawyerRegisterMutation = useLawyerRegisterMutation();
+
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    field: "profile_picture" | "certificate"
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      form.setValue(field, file, { shouldValidate: true });
+      if (field === "profile_picture")
+        setProfilePreview(URL.createObjectURL(file));
+      if (field === "certificate") setCertificateFile(file);
+    } else {
+      setProfilePreview(null);
+      setCertificateFile(null);
+      form.setValue(field, null as unknown as File, { shouldValidate: true });
+    }
+  };
 
   const onSubmit = (data: ILawyerRegisterForm) => {
     lawyerRegisterMutation.mutate({ ...data, role: "lawyer" });
@@ -49,7 +65,6 @@ const LawyerRegisterForm = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid gap-4 pb-4 max-w-md mx-auto"
         >
-          {/* Name Field */}
           <FormField
             control={form.control}
             name="name"
@@ -64,7 +79,6 @@ const LawyerRegisterForm = ({
             )}
           />
 
-          {/* Email Field */}
           <FormField
             control={form.control}
             name="email"
@@ -84,34 +98,37 @@ const LawyerRegisterForm = ({
           />
 
           <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="********"
-                    {...field}
-                    className="pr-10" // Ensure space for the icon
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-3 flex items-center"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? <Eye className="text-gray-500" size={18} /> : <EyeClosed className="text-gray-500" size={18} />}
-                  </button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="********"
+                      {...field}
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-3 flex items-center"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? (
+                        <Eye className="text-gray-500" size={18} />
+                      ) : (
+                        <EyeClosed className="text-gray-500" size={18} />
+                      )}
+                    </button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          {/* Phone Number Field */}
           <FormField
             control={form.control}
             name="phone_number"
@@ -130,59 +147,56 @@ const LawyerRegisterForm = ({
             )}
           />
 
-          {/* Specialization Field (Dropdown) */}
           <FormField
             control={form.control}
-            name="specialization"
-            render={({ field }) => (
+            name="profile_picture"
+            render={() => (
               <FormItem>
-                <FormLabel>Specialization</FormLabel>
-                <FormControl>
-                  <MultiSelect
-                    options={EXPERTISE_AREAS}
-                    onValueChange={field.onChange}
-                    placeholder={"Select specialization"}
-                    maxCount={2}
-                    className="w-full"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="experience"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Years of Experience</FormLabel>
+                <FormLabel>Profile Picture</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    placeholder="Enter years of experience"
-                    {...field}
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={(e) => handleFileChange(e, "profile_picture")}
                   />
                 </FormControl>
+                <FormMessage />
+                {profilePreview && (
+                  <div className="mt-2 h-20 w-20 ">
+                    <img
+                      src={profilePreview}
+                      alt="Preview"
+                      className="w-full h-full"
+                    />
+                  </div>
+                )}
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="certificate"
+            render={() => (
+              <FormItem>
+                <FormLabel>Certificate</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => handleFileChange(e, "certificate")}
+                  />
+                </FormControl>
+                {certificateFile && (
+                  <p className="mt-2 text-sm text-gray-500">
+                    Selected file: {certificateFile.name}
+                  </p>
+                )}
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Address Field */}
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Address</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Enter your full address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="flex gap-2 justify-end items-center">
             <Button
               variant="outline"

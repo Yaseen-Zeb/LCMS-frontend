@@ -1,192 +1,122 @@
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useParams } from "react-router-dom";
+import { useGetClientProfile } from "../api/api-queries";
+import { useAuthContext } from "@/providers/auth-provider";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ArrowUpToLine,
-  CalendarDays,
-  CircleUserRound,
-  DollarSign,
-  Eye,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
-import OpenCases from "./open-cases";
-import ClosedCases from "./closed-cases";
-import { Link, useParams } from "react-router-dom";
-import { useGetCases } from "@/features/case/api/api-queries";
-import Loader from "@/components/ui/loader";
+import { UserCircle, FileCheck2, Tickets } from "lucide-react";
 import ApiResponseError from "@/components/shared/api-response-error";
-import NoDataFound from "@/components/shared/no-data-found";
-import { useGetClientDetail } from "../api/api-queries";
-import formatDate from "@/utils/formatDate";
+import ClientCases from "./client-cases";
+import ClientCaseBids from "./client-case-bids";
+import ClientIno from "./client-info";
+import Loader from "@/components/ui/loader";
+import { env } from "@/config/env";
 
 const ClientProfile = () => {
   const { id } = useParams();
+  const { user } = useAuthContext();
   const {
-    data: cases,
-    isLoading: isCasesLoading,
-    isError: isCasesError,
-  } = useGetCases();
-  const {
-    data: clientDetail,
-    isLoading: isClientDetailLoading,
-    isError: isClientDetailError,
-  } = useGetClientDetail(Number(id || 0));
+    data: profileDetail,
+    isLoading: isProfileDetailLoading,
+    isError: isProfileDetailError,
+    error,
+  } = useGetClientProfile(Number(id));
+  const isMyProfile = user && user.id === Number(id);
 
   return (
-    <div className="grid grid-cols-8">
-      <div className="col-span-5">
-        <h2 className="text-xl font-medium mb-3 px-1">Client Profile</h2>
-
-        {isClientDetailLoading ? (
-          <Loader />
-        ) : clientDetail?.data ? (
-          <>
-            <Card className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] border-none  p-5 w-full rounded-lg rounded-bl-none font-sans overflow-hidden">
-              <CardHeader>
-                <CardTitle className="text-lg font-medium text-primary mb-2 flex gap-1 items-center">
-                  <CircleUserRound size={30} />
-                  <span>{clientDetail?.data.name}</span>
-                </CardTitle>
-              </CardHeader>
-
-              <CardContent className="space-y-4 mt-3">
-                {/* Info Grid */}
-                <div className="grid grid-cols-1 gap-3">
-                  <div className="flex items-start gap-2 text-sm">
-                    <span className="flex items-center gap-1 text-gray-500">
-                      <Mail size={16} />
-                      Contact email:
-                    </span>
-                    <span>{clientDetail?.data.email}</span>
-                  </div>
-
-                  <div className="flex items-start gap-2 text-sm">
-                    <span className="flex items-center gap-1 text-gray-500">
-                      <Phone size={16} />
-                      Phone number:
-                    </span>
-                    <span>{clientDetail?.data.phone_number}</span>
-                  </div>
-
-                  <div className="flex items-start gap-2 text-sm">
-                    <span className="flex items-center gap-1 text-gray-500">
-                      <CalendarDays size={16} />
-                      Joined since:
-                    </span>
-                    <span>{formatDate(clientDetail?.data.createdAt)}</span>
-                  </div>
-
-                  <div className="flex items-start gap-2 text-sm">
-                    <span className="flex items-center gap-1 text-gray-500">
-                      <ArrowUpToLine size={16} />
-                      Total posted cases:
-                    </span>
-                    <span>{clientDetail.data.postedCases}</span>
-                  </div>
-
-                  <div className="flex items-start gap-2 text-sm">
-                    <span className="flex items-center gap-1 text-gray-500">
-                      <MapPin size={16} />
-                      Address:
-                    </span>
-                    <span>{clientDetail?.data.address}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Tabs defaultValue="open-cases">
-              <TabsList className="h-12 bg-white border-t-0 shadow-md rounded-lg rounded-t-none font-sans overflow-hidden px-2 justify-start">
-                <TabsTrigger
-                  value="open-cases"
-                  className="text-gray-500 data-[state=active]:text-primary data-[state=active]:shadow-none font-medium border-b-2 border-white rounded-none data-[state=active]:border-blue-600"
-                >
-                  Open Cases
-                </TabsTrigger>
-                <TabsTrigger
-                  value="closed-cases"
-                  className="text-gray-500 data-[state=active]:text-primary data-[state=active]:shadow-none font-medium border-b-2 border-white rounded-none data-[state=active]:border-blue-600"
-                >
-                  Closed Cases
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="open-cases" className="mt-[4px]">
-                {clientDetail?.data && (
-                  <OpenCases openCases={clientDetail?.data.openCases} />
-                )}
-              </TabsContent>
-              <TabsContent value="closed-cases" className="mt-[4px]">
-                {clientDetail?.data && (
-                  <ClosedCases closedCases={clientDetail?.data.closedCases} />
-                )}
-              </TabsContent>
-            </Tabs>
-          </>
-        ) : isClientDetailError ? (
-          <ApiResponseError />
-        ) : (
-          <NoDataFound />
-        )}
-      </div>
-
-      <div className="col-span-3 pl-10">
-        <h2 className="text-xl font-medium mb-3 px-1">Most Popular Cases</h2>
-        {isCasesLoading ? (
-          <Loader />
-        ) : cases?.data.length ? (
-          <div className="space-y-2">
-            {cases.data.slice(0, 4).map((caseItem) => (
-              <Card className="bg-white col-span-4 shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden">
-                <CardHeader>
-                  <Link to={`/case/detail/${caseItem.id}`}>
-                    <CardTitle className="text-lg font-medium text-primary mb-2">
-                      <span>
-                        {caseItem.title.length > 30 ? (
-                          <>
-                            {caseItem.title.substring(0, 30)}
-                            <b> ...</b>
-                          </>
-                        ) : (
-                          caseItem.title
-                        )}
-                      </span>
-                    </CardTitle>
-                  </Link>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Separator />
-                  <div className="flex justify-between text-sm gap-3">
-                    <div className="flex gap-1 h-6 w-1/2 items-center">
-                      <DollarSign size={16} className="text-gray-500" />
-                      <span>
-                        {caseItem.budget_amount} {caseItem.budget_type}
-                      </span>
-                    </div>
-                    <Link to={`/case/detail/${caseItem.id}`}>
-                      <Button className="flex gap-1 h-6" variant={"outline"}>
-                        <Eye />
-                        View
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-            <div className="text-end">
-              <Link to={"/case/list"}>
-                <Button className="h-8">See more ...</Button>
-              </Link>
-            </div>
+    <div className="flex gap-6 p-6 bg-gray-100 min-h-screen">
+      <Tabs
+        defaultValue="client-profile"
+        className="grid grid-cols-7 w-full gap-4"
+      >
+        {/* Sidebar */}
+        <aside className=" bg-white rounded-xl shadow-lg p-4 col-span-2">
+          <div className="flex flex-col items-center">
+            {profileDetail?.data.profile_picture ? (
+              <img
+                className="w-20 h-20 rounded-full"
+                src={`${env.VITE_APP_BASE_URL}/${profileDetail.data.profile_picture}`}
+                alt=""
+              />
+            ) : (
+              <UserCircle size={80} />
+            )}
+            <h2 className="text-lg font-semibold ">
+              {profileDetail?.data.name}
+            </h2>
+            <p className="text-gray-500 text-sm">{profileDetail?.data.email}</p>
           </div>
-        ) : isCasesError ? (
-          <ApiResponseError />
-        ) : (
-          <NoDataFound />
-        )}
-      </div>
+          <Separator className="mt-5 mb-16" />
+
+          {/* Tabs Navigation */}
+          <TabsList className="flex flex-col w-full bg-transparent">
+            <TabsTrigger
+              value="client-profile"
+              className="w-full text-left data-[state=active]:bg-blue-100 data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
+            >
+              <Button
+                variant="ghost"
+                className="w-full flex items-center justify-start gap-1.5 hover:bg-transparent"
+              >
+                <UserCircle size={18} />{" "}
+                {isMyProfile ? "My Profile" : "Client Profile"}
+              </Button>
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="client-cases"
+              className="w-full text-left data-[state=active]:bg-blue-100 data-[state=active]:text-blue-500 data-[state=active]:shadow-none bg-none"
+            >
+              <Button
+                variant="ghost"
+                className="w-full flex items-center justify-start gap-1.5 hover:bg-transparent"
+              >
+                <FileCheck2  size={18} />
+                {isMyProfile ? "My Posted Cases" : "Client Posted Cases"}
+              </Button>
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="bids"
+              className="w-full text-left data-[state=active]:bg-blue-100 data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
+            >
+              <Button
+                variant="ghost"
+                className="w-full flex items-center justify-start gap-1.5 hover:bg-transparent"
+              >
+                <Tickets size={18} />
+                Bids for my Cases
+              </Button>
+            </TabsTrigger>
+          </TabsList>
+        </aside>
+
+        {/* Main Content */}
+        <main className=" col-span-5 bg-white rounded-xl">
+          {/* Tabs Content */}
+          {!isProfileDetailLoading ? (
+            isProfileDetailError ? (
+              <ApiResponseError msg={(error as Error).message} />
+            ) : profileDetail?.data ? (
+              <>
+                <TabsContent value="client-profile" className="mt-4 p-4 pt-0">
+                  <ClientIno profileInfo={profileDetail?.data} />
+                </TabsContent>
+                <TabsContent value="client-cases" className="mt-4 p-4 pt-0">
+                  <ClientCases cases={profileDetail?.data.cases} />
+                </TabsContent>
+                <TabsContent value="bids" className="mt-4 p-4 pt-0">
+                  <ClientCaseBids bids={profileDetail?.data.bids} />
+                </TabsContent>
+              </>
+            ) : (
+              <ApiResponseError msg="No profile data available" />
+            )
+          ) : (
+            <Loader />
+          )}
+        </main>
+      </Tabs>
     </div>
   );
 };

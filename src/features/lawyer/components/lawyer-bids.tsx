@@ -1,7 +1,7 @@
 import NoDataFound from "@/components/shared/no-data-found";
 import Loader from "@/components/ui/loader";
 import ApiResponseError from "@/components/shared/api-response-error";
-import { useGetMyBids } from "../../api/api-queries";
+import { useGetMyBids } from "../api/api-queries";
 import formatDate from "@/utils/formatDate";
 import Status from "@/components/shared/status";
 import { Link } from "react-router-dom";

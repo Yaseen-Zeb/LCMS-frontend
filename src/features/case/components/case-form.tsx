@@ -37,20 +37,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useAddCaseMutation } from "../api/api-queries";
+import { useAddCaseMutation, useUpdateCaseMutation } from "../api/api-queries";
 import { useAuthContext } from "@/providers/auth-provider";
+import { ICase } from "@/types";
+import { Edit } from "lucide-react";
 
-const CaseForm = () => {
+const CaseForm = ({
+  action,
+  selectedRow,
+}: {
+  action: string;
+  selectedRow?: ICase;
+}) => {
   const { user } = useAuthContext();
   const form = useForm<ICaseForm>({
     resolver: zodResolver(CaseFormSchema),
-    defaultValues: CaseFormDV,
+    defaultValues: action === "add" ? CaseFormDV : selectedRow,
   });
   const addCaseMutation = useAddCaseMutation();
-  console.log(form.formState.errors);
+  const updateCaseMutation = useUpdateCaseMutation();
 
   const onSubmit = (data: ICaseForm) => {
-    addCaseMutation.mutate({ ...data, client_id: user!.id });
+    if (action === "add") {
+      addCaseMutation.mutate({ ...data, client_id: user!.id });
+      return;
+    }
+    updateCaseMutation.mutate({
+      ...data,
+      client_id: user!.id,
+      case_id: selectedRow!.id,
+    });
   };
 
   return (
@@ -60,11 +76,21 @@ const CaseForm = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Post Case</Button>
+        {action == "add" ? (
+          <Button>Post Case</Button>
+        ) : (
+          <span className="flex items-center w-full">
+            {" "}
+            <Edit size={15} className="mr-2 h-4 w-4" /> Edit
+          </span>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle> Post Case</DialogTitle>
+          <DialogTitle>
+            {" "}
+            {action === "add" ? "Post" : "Update"} Case
+          </DialogTitle>
           <DialogDescription>
             Provide details about your legal case.
           </DialogDescription>
@@ -264,8 +290,13 @@ const CaseForm = () => {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={addCaseMutation.isLoading}>
-                Submit Case
+              <Button
+                type="submit"
+                disabled={
+                  addCaseMutation.isLoading || updateCaseMutation.isLoading
+                }
+              >
+                {action == "add" ? "Submit" : "Update"} Case
               </Button>
             </DialogFooter>
           </form>

@@ -1,11 +1,23 @@
 import ChangePassword from "@/features/auth/components/change-password";
 import { IUser } from "@/types";
-import UpdateProfile from "./update-profile";
+import UpdateClientProfile from "./update-client-profile";
+import { useAuthContext } from "@/providers/auth-provider";
+import { useParams } from "react-router-dom";
 
-const UserProfile = ({ profileInfo }: { profileInfo: IUser }) => {
+const ClientIno = ({ profileInfo }: { profileInfo: IUser }) => {
+  const { user } = useAuthContext();
+  const { id } = useParams();
+
+  const isMyProfile = user && user.id === Number(id);
   return (
     <>
-      <div className=" items-start justify-between grid grid-cols-3">
+      {" "}
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-xl font-medium">
+          {isMyProfile ? "My Profile" : "Client Profile"}
+        </h3>
+      </div>
+      <div className=" items-start justify-between grid grid-cols-2 mt-2">
         <div className="flex flex-col gap-3">
           <div className="px-2">
             <p className="text-sm font-medium text-gray-500">Name:</p>
@@ -26,14 +38,16 @@ const UserProfile = ({ profileInfo }: { profileInfo: IUser }) => {
             <p className="text-sm font-medium px-1">{profileInfo.address}</p>
           </div>
         </div>
-        <div className="flex flex-col gap-2 items-center mt-12">
-          <UpdateProfile oldDetalil={profileInfo}/>
-         <ChangePassword/>
-        </div>
+        {user && profileInfo.id === user.id && (
+          <div className="flex flex-col gap-2 items-center ">
+            <UpdateClientProfile oldDetalil={profileInfo} />
+            <ChangePassword />
+          </div>
+        )}
         <div></div>
       </div>
     </>
   );
 };
 
-export default UserProfile;
+export default ClientIno;

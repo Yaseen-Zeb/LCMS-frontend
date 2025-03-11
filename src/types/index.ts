@@ -6,6 +6,7 @@ export type IContextUser = {
   id: number;
   name: string;
   email: string;
+  profile_picture: string;
   role: IROLE;
 };
 
@@ -27,11 +28,12 @@ export type BaseEntity = {
 export type ICase = {
   title: string;
   description: string;
-  expertise_required: String[];
+  expertise_required: string[];
   case_category: string;
   urgency: string;
   budget_type: string;
   budget_amount: number;
+  total_bids: number;
   location: string;
   status: string;
 } & BaseEntity;
@@ -43,13 +45,17 @@ export type IUser = {
   address: string;
   specialization?: string[];
   experience?: number;
+  profile_picture?:string;
+  certificate?:string;
 } & BaseEntity;
 
 export type IBid = {
   description: string;
   bid_status: string;
-  client_id: number;
-  lawyer_is: number;
+  lawyer_id: number;
+  case_id: number;
+  case: ICase;
+  lawyer: IUser;
 } & BaseEntity;
 
 export type IApiBaseResponse = {

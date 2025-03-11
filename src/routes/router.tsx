@@ -4,12 +4,13 @@ import HomePage from "@/components/pages/home";
 import ContentLayout from "@/components/layouts/content-layout";
 import CasesList from "@/features/case/components/cases-list";
 import LawyersList from "@/features/lawyer/components/lawyers-list";
-import MyClientProfile from "@/features/client/component/myProfile/profile";
-import RequireAuth from "@/components/layouts/require-auth";
 import CaseDetail from "@/features/case/components/case-detail";
-import LawyerProfile from "@/features/lawyer/components/lawyer-profile";
 import ClientProfile from "@/features/client/component/client-profile";
-import MyLawyerProfile from "@/features/lawyer/components/myProfile/profile";
+import LawyerProfile from "@/features/lawyer/components/lawyer-profile";
+import PrivacyPolicy from "@/components/pages/privacy-policy";
+import AboutUs from "@/components/pages/about-us";
+import ContactUs from "@/components/pages/contact-us";
+import Chat from "@/components/pages/chat";
 
 const AppRoutes = createBrowserRouter([
   // Home
@@ -17,10 +18,22 @@ const AppRoutes = createBrowserRouter([
     path: "/",
     element: <HomePage />,
   },
-  // {
-  //   path: "/about-us",
-  //   element: <AboutUs />,
-  // },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
+  },
+  {
+    path: "/about-us",
+    element: <AboutUs />,
+  },
+  {
+    path: "/contact-us",
+    element: <ContactUs />,
+  },
+  {
+    path: "/chat",
+    element: <Chat />,
+  },
 
   {
     path: "/case",
@@ -45,14 +58,6 @@ const AppRoutes = createBrowserRouter([
         path: "profile/:id",
         element: <ClientProfile />,
       },
-      {
-        path: "profile",
-        element: (
-          <RequireAuth permittedRoles={["client"]}>
-            <MyClientProfile />
-          </RequireAuth>
-        ),
-      },
     ],
   },
 
@@ -67,14 +72,6 @@ const AppRoutes = createBrowserRouter([
       {
         path: "profile/:id",
         element: <LawyerProfile />,
-      },
-      {
-        path: "profile",
-        element: (
-          <RequireAuth permittedRoles={["lawyer"]}>
-            <MyLawyerProfile />
-          </RequireAuth>
-        ),
       },
     ],
   },

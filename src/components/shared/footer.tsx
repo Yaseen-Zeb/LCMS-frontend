@@ -12,27 +12,22 @@ const Footer = () => {
           >
             <img src={logo} className="h-8" alt="Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap">
-              LCMS
+            LEGSER
             </span>
           </Link>
           <ul className="flex flex-wrap items-center mb-6 text-sm font-medium  sm:mb-0">
             <li>
-              <Link to="#" className="hover:underline me-4 md:me-6">
-                About
+              <Link to="/about-us" className="hover:underline me-4 md:me-6">
+                About Us
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:underline me-4 md:me-6">
+              <Link to="/privacy-policy" className="hover:underline me-4 md:me-6">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:underline me-4 md:me-6">
-                Licensing
-              </Link>
-            </li>
-            <li>
-              <Link to="#" className="hover:underline">
+              <Link to="/contact-us" className="hover:underline">
                 Contact
               </Link>
             </li>

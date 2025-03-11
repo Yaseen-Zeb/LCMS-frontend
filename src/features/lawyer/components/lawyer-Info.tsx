@@ -1,17 +1,19 @@
-import { useGetLawyerDetail } from "../../api/api-queries";
-import { useAuthContext } from "@/providers/auth-provider";
+import { useGetLawyerDetail } from "../api/api-queries";
+// import { useAuthContext } from "@/providers/auth-provider";
 import Loader from "@/components/ui/loader";
 import ApiResponseError from "@/components/shared/api-response-error";
 import ChangePassword from "@/features/auth/components/change-password";
-import UpdateProfile from "./update-profile";
+import UpdateProfile from "./update-lawyer-profile";
+import { useParams } from "react-router-dom";
 
-const UserProfile = () => {
-  const { user } = useAuthContext();
+const LawyerInfo = () => {
+  // const { user } = useAuthContext();
+  const {id} = useParams()
   const {
     data: lawyerDetail,
     isLoading: isLawyerDetailLoading,
     isError: isLawyerDetailError,
-  } = useGetLawyerDetail(Number(user?.id || 0));
+  } = useGetLawyerDetail(Number(id || 0));
 
   if (isLawyerDetailLoading) {
     return <Loader />;
@@ -66,4 +68,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default LawyerInfo;

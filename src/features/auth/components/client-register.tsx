@@ -17,23 +17,69 @@ import {
   IClientRegisterForm,
 } from "../api/schema";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useClientRegisterMutation } from "../api/api-queries";
 import { Eye, EyeClosed } from "lucide-react";
+import { dialogClose } from "@/components/ui/dialog";
+import { useAuthContext } from "@/providers/auth-provider";
+import toast from "react-hot-toast";
+import { api } from "@/lib/api-client";
 
 const ClientRegisterForm = ({
   setIsAuthDialogOpen,
 }: {
   setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const form = useForm<IClientRegisterForm>({
     resolver: zodResolver(ClientRegisterFormSchema),
     defaultValues: ClientRegisterFormDV,
   });
-  const clientRegisterMutation = useClientRegisterMutation();
-  const onSubmit = (data: IClientRegisterForm) => {
-    clientRegisterMutation.mutate({ ...data, role: "client" });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      form.setValue("profile_picture", file, { shouldValidate: true });
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setPreviewUrl(null);
+      form.setValue("profile_picture", null as unknown as File, {
+        shouldValidate: true,
+      }); // Type assertion trick
+    }
+  };
+
+  const { initializeAuth } = useAuthContext(); // Moved outside of onSubmit
+
+  const onSubmit = async (data: IClientRegisterForm) => {
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("phone_number", data.phone_number);
+    formData.append("address", data.address);
+    formData.append("profile_picture", data.profile_picture);
+    formData.append("role", "client");
+
+    try {
+      const response = await api.post("/auth/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setIsLoading(false);
+      localStorage.setItem("token", response.data.token);
+      initializeAuth();
+      dialogClose();
+      toast.success("Registered successfully");
+    } catch (error) {
+      console.error("Error registering:", error);
+      setIsLoading(false);
+      toast.error("Error registering user: " + (error as Error).message);
+    }
   };
 
   return (
@@ -90,7 +136,7 @@ const ClientRegisterForm = ({
                       type={showPassword ? "text" : "password"}
                       placeholder="********"
                       {...field}
-                      className="pr-10" // Ensure space for the icon
+                      className="pr-10"
                     />
                     <button
                       type="button"
@@ -129,7 +175,7 @@ const ClientRegisterForm = ({
             )}
           />
 
-          {/* Address Field (Optional) */}
+          {/* Address Field */}
           <FormField
             control={form.control}
             name="address"
@@ -144,6 +190,34 @@ const ClientRegisterForm = ({
             )}
           />
 
+          {/* Profile Picture Upload */}
+          <FormField
+            control={form.control}
+            name="profile_picture"
+            render={() => (
+              <FormItem>
+                <FormLabel>Profile Picture</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/png, image/jpeg, image/jpg"
+                    onChange={handleFileChange}
+                  />
+                </FormControl>
+                <FormMessage />
+                {previewUrl && (
+                  <div className="mt-2 h-20 w-20 ">
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="w-full h-full"
+                    />
+                  </div>
+                )}
+              </FormItem>
+            )}
+          />
+
           <div className="flex gap-2 justify-end items-center">
             <Button
               variant="outline"
@@ -152,7 +226,7 @@ const ClientRegisterForm = ({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={clientRegisterMutation.isLoading}>
+            <Button type="submit" disabled={isLoading}>
               Register
             </Button>
           </div>
