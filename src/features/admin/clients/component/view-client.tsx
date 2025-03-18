@@ -19,7 +19,7 @@ const ViewClient = ({ client }: { client: IUser }) => {
       <SheetContent>
         <SheetHeader>
           <SheetTitle className="text-xl font-medium">
-            client Detials
+            Client Detials
           </SheetTitle>
         </SheetHeader>
 

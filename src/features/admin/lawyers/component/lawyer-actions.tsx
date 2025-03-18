@@ -49,7 +49,7 @@ const LawyerActions = ({ lawyer }: { lawyer: IUser }) => {
             className=" text-green-500 gap-1.5"
             onSelect={(e) => e.preventDefault()}
           >
-            <Check size={15} /> Approve
+            <Check size={15} /> Active
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

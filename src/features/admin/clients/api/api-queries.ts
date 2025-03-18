@@ -15,7 +15,7 @@ export const useChangeStatus = () => {
   return useMutation({
     mutationFn: changeStatus,
     onSuccess: () => {
-      queryClient.invalidateQueries(["getLawyers"]);
+      queryClient.invalidateQueries(["getClients"]);
       toast.success("Status changed successfully");
     },
     onError: (error: IApiBaseResponse) => {

@@ -96,7 +96,7 @@ const LawyersList = () => {
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white overflow-y-scroll h-96">
+              <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
                 {EXPERTISE_AREAS.map((spec) => (
                   <DropdownMenuItem
                     key={spec.value}
@@ -122,7 +122,7 @@ const LawyersList = () => {
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white overflow-y-scroll h-96">
+              <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
                 <DropdownMenuItem
                   onClick={() => setExperienceFilter("Low to High")}
                 >

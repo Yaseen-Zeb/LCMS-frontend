@@ -103,7 +103,7 @@ const CasesList = () => {
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white overflow-y-scroll h-96">
+              <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
                 {CASE_CATEGORIES.map((category) => (
                   <DropdownMenuItem
                     key={category.value}
@@ -129,7 +129,7 @@ const CasesList = () => {
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white overflow-y-scroll h-96">
+              <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
                 <DropdownMenuItem onClick={() => setStatusFilter("Open")}>
                   Open
                 </DropdownMenuItem>
@@ -153,7 +153,7 @@ const CasesList = () => {
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white overflow-y-scroll h-96">
+              <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
                 <DropdownMenuItem
                   onClick={() => setBudgetFilter("Low to High")}
                 >
