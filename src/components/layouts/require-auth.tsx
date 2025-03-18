@@ -24,7 +24,6 @@ const RequireAuth = ({ permittedRoles, children }: RequireAuthProps) => {
   if (!user) {
     return <Navigate to="/admin/login" replace />;
   }
-console.log(user);
 
   if (!permittedRoles.includes(user.role as IROLE)) {
     return <Navigate to="/page-not-found" replace />;

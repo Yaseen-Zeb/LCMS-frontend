@@ -16,14 +16,21 @@ import {
   LawyerRegisterFormSchema,
 } from "../api/schema";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useLawyerRegisterMutation } from "../api/api-queries";
 import { Eye, EyeClosed } from "lucide-react";
+import { EXPERTISE_AREAS } from "@/utils/constant";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { Textarea } from "@/components/ui/textarea";
+import { useAuthContext } from "@/providers/auth-provider";
+import { api } from "@/lib/api-client";
+import { dialogClose } from "@/components/ui/dialog";
+import toast from "react-hot-toast";
 
 const LawyerRegisterForm = ({
   setIsAuthDialogOpen,
 }: {
   setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+    const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [certificateFile, setCertificateFile] = useState<File | null>(null);
@@ -32,7 +39,6 @@ const LawyerRegisterForm = ({
     resolver: zodResolver(LawyerRegisterFormSchema),
     defaultValues: LawyerRegisterFormDV,
   });
-  const lawyerRegisterMutation = useLawyerRegisterMutation();
 
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -51,8 +57,36 @@ const LawyerRegisterForm = ({
     }
   };
 
-  const onSubmit = (data: ILawyerRegisterForm) => {
-    lawyerRegisterMutation.mutate({ ...data, role: "lawyer" });
+  const { initializeAuth } = useAuthContext();
+
+  const onSubmit = async (data: ILawyerRegisterForm) => {
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("phone_number", data.phone_number);
+    formData.append("address", data.address);
+    formData.append("profile_picture", data.profile_picture);
+    formData.append("certificate", data.certificate);
+    formData.append("role", "lawyer");
+
+    try {
+      const response = await api.post("/auth/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setIsLoading(false);
+      localStorage.setItem("token", response.data.token);
+      initializeAuth();
+      dialogClose();
+      toast.success("Registered successfully");
+    } catch (error) {
+      console.error("Error registering:", error);
+      setIsLoading(false);
+      toast.error("Error registering user: " + (error as Error).message);
+    }
   };
 
   return (
@@ -149,6 +183,27 @@ const LawyerRegisterForm = ({
 
           <FormField
             control={form.control}
+            name="specialization"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Specialization</FormLabel>
+                <FormControl>
+                  <MultiSelect
+                    options={EXPERTISE_AREAS}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value || []}
+                    placeholder={"Select required expertise"}
+                    maxCount={2}
+                    className="w-full"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="profile_picture"
             render={() => (
               <FormItem>
@@ -197,6 +252,20 @@ const LawyerRegisterForm = ({
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Addess</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Enter address" {...field}></Textarea>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex gap-2 justify-end items-center">
             <Button
               variant="outline"
@@ -205,7 +274,7 @@ const LawyerRegisterForm = ({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={lawyerRegisterMutation.isLoading}>
+            <Button type="submit" disabled={isLoading}>
               Register
             </Button>
           </div>
