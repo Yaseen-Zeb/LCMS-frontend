@@ -5,7 +5,6 @@ import {
   CalendarClock,
   CalendarDays,
   ChartSpline,
-  Heart,
   MapPin,
   Receipt,
   TrendingUp,
@@ -22,6 +21,7 @@ import formatDate from "@/utils/formatDate";
 import Status from "@/components/shared/status";
 
 const CaseDetail = () => {
+  const { user } = useAuthContext();
   const [copied, setCopied] = useState(false);
   const { id } = useParams();
   const { handleBidAuthModal } = useAuthContext();
@@ -129,24 +129,26 @@ const CaseDetail = () => {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/3 bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-md">
-        <div className="flex flex-col gap-3">
-          <Button
-            onClick={() => handleBidAuthModal(caseDetail.data.id)}
-            className="w-full px-6 py-2 bg-primary text-white rounded-md font-semibold"
-          >
-            Place your bid
-          </Button>
-          <Button
+      <div className="w-full lg:w-1/3 bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-md max-h-[376px]">
+        {(!user || user?.role == "lawyer") && (
+          <div className="flex flex-col gap-3 mb-8">
+            <Button
+              onClick={() => handleBidAuthModal(caseDetail.data.id)}
+              className="w-full px-6 py-2 bg-primary text-white rounded-md font-semibold"
+            >
+              Place your bid
+            </Button>
+            {/* <Button
             variant={"outline"}
             className="flex justify-center items-center gap-2"
           >
             <Heart size={18} /> Save to wishlist
-          </Button>
-        </div>
+          </Button> */}
+          </div>
+        )}
 
         <Link to={`/client/profile/${caseDetail.data.client.id}`}>
-          <div className="mt-8 bg-white p-4 rounded-lg border border-gray-300 group hover:border-primary cursor-pointer">
+          <div className="bg-white p-4 rounded-lg border border-gray-300 group hover:border-primary cursor-pointer">
             <h3 className="font-semibold text-gray-800">About the Client</h3>
             <div className="flex items-center gap-1 mt-2 group-hover:text-primary">
               <UserCircle size={18} />

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import NavBar from "../shared/nav-bar";
 import Header from "../shared/header";
 import Footer from "../shared/footer";
+import { Link } from "react-router-dom";
 
 const AboutUs = () => {
   return (
@@ -97,7 +98,7 @@ const AboutUs = () => {
               <p className="text-gray-600">
                 Have questions or need assistance? Reach out to our team today!
               </p>
-              <Button variant={"outline"}>Contact Us</Button>
+              <Link to={"/contact-us"}><Button variant={"outline"}>Contact Us</Button></Link>
             </div>
           </CardContent>
         </Card>

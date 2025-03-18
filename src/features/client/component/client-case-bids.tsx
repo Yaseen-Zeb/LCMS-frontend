@@ -22,14 +22,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
+  dialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-
- 
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 const renderSheet = (bidItem: IBid) => {
   return (
@@ -93,7 +93,7 @@ const renderSheet = (bidItem: IBid) => {
                 <span className="font-medium">Expertise:</span>
               </p>
               <p className="text-sm col-span-3">
-                {(bidItem?.lawyer?.specialization || []).join(", ")}
+                {(bidItem?.lawyer.specialization || []).join(", ")}
               </p>
               <p className="text-sm col-span-1">
                 <span className="font-medium">Experience:</span>
@@ -135,7 +135,7 @@ const renderSheet = (bidItem: IBid) => {
               <p className="text-sm col-span-1">
                 <span className="font-medium">Total Bids:</span>
               </p>
-              <p className="text-sm col-span-3">{bidItem.case.total_bids}</p>
+              <p className="text-sm col-span-3">{bidItem.case.total_bids ?? 0}</p>
               <p className="text-sm col-span-1">
                 <span className="font-medium">Status:</span>
               </p>
@@ -156,23 +156,41 @@ const renderSheet = (bidItem: IBid) => {
   );
 };
 
-const acceptBidDialog = () =>{
-  return(
-    <Dialog>
-  <DialogTrigger className="flex items-center gap-1.5"><BookmarkCheck size={15} /> Accept</DialogTrigger>
+const acceptBidDialog = (lawyer_id:number,lawyer_name:string) => {
+  console.log(lawyer_id);
+  
+  return (
+<Dialog>
+  <DialogTrigger className="flex items-center gap-1.5 w-full">
+    <BookmarkCheck size={15} /> Accept
+  </DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogTitle>Confirm Bid Acceptance</DialogTitle>
       <DialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
+        By accepting this bid, you will initiate a direct chat with **{lawyer_name}** to discuss your case progress. Please note that:
+        <ul className="mt-2 list-disc pl-5 space-y-1 text-gray-600">
+          <li>All other bids for this case will be deactivated.</li>
+          <li>You will engage in direct communication with this lawyer.</li>
+          <li>Ensure you are comfortable proceeding with this lawyer before accepting.</li>
+        </ul>
       </DialogDescription>
     </DialogHeader>
+
+    <div className="space-y-3">
+      <p className="text-gray-600 text-sm">Write your first message to the lawyer to initiate the discussion:</p>
+      <Textarea placeholder={`Hello ${lawyer_name}, I would like to discuss my case...`} />
+    </div>
+
+    <div className="flex justify-end gap-2">
+      <Button variant="outline" onClick={()=>dialogClose()}>Cancel</Button>
+      <Button variant="default">Accept and Start Chat</Button>
+    </div>
   </DialogContent>
 </Dialog>
 
-  )
-}
+  );
+};
 
 const ClientCaseBids = ({ bids }: { bids: IBid[] }) => {
   const deleteCaseMutation = useDeleteCase();
@@ -202,15 +220,17 @@ const ClientCaseBids = ({ bids }: { bids: IBid[] }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-32">
           <DropdownMenuItem
-            className="text-primary"
+            className="text-primary w-full"
             onSelect={(e) => e.preventDefault()}
           >
             {renderSheet(bidItem)}
           </DropdownMenuItem>
-          <DropdownMenuItem className=" text-green-500 gap-1.5" onSelect={(e) => e.preventDefault()}>
-            {acceptBidDialog()}
+          <DropdownMenuItem
+            className=" text-green-500 gap-1.5"
+            onSelect={(e) => e.preventDefault()}
+          >
+            {acceptBidDialog(bidItem.lawyer.id,bidItem.lawyer.name)}
           </DropdownMenuItem>
-
         </DropdownMenuContent>
       </DropdownMenu>
     );
@@ -259,7 +279,6 @@ const ClientCaseBids = ({ bids }: { bids: IBid[] }) => {
                       bidItem.description
                     )}
                   </td>
-
                   <td className="px-6 py-4 whitespace-nowrap">
                     {bidItem.case.title.length > 40 ? (
                       <>
@@ -270,6 +289,8 @@ const ClientCaseBids = ({ bids }: { bids: IBid[] }) => {
                       bidItem.case.title
                     )}
                   </td>
+
+                 
                   <td className="px-6 py-4 whitespace-nowrap">
                     {bidItem.lawyer.name.length > 40 ? (
                       <>

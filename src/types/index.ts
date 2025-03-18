@@ -35,7 +35,14 @@ export type ICase = {
   budget_amount: number;
   total_bids: number;
   location: string;
+  client_id: number;
   status: string;
+} & BaseEntity;
+
+export type IFeedback = {
+  name: string;
+  email: string;
+  message: string;
 } & BaseEntity;
 
 export type IUser = {
@@ -45,8 +52,9 @@ export type IUser = {
   address: string;
   specialization?: string[];
   experience?: number;
-  profile_picture?:string;
-  certificate?:string;
+  profile_picture?: string;
+  certificate?: string;
+  status: boolean;
 } & BaseEntity;
 
 export type IBid = {

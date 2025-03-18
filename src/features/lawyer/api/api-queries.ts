@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  getLawyerDetail,
+  getLawyerProfile,
   getLawyers,
-  getMyBids,
   lawyerUpdateProfile,
 } from "./api-services";
 import { dialogClose } from "@/components/ui/dialog";
@@ -16,17 +15,10 @@ export const useGetLawyers = () => {
   });
 };
 
-export const useGetLawyerDetail = (id: number) => {
+export const useGetLawyerProfile = (id: number) => {
   return useQuery({
-    queryKey: ["getLawyerDetail"],
-    queryFn: () => getLawyerDetail(id),
-  });
-};
-
-export const useGetMyBids = () => {
-  return useQuery({
-    queryKey: ["getMyBids"],
-    queryFn: getMyBids,
+    queryKey: ["getLawyerProfile", id],
+    queryFn: () => getLawyerProfile(id),
   });
 };
 
@@ -37,7 +29,7 @@ export const useLawyerUpdateProfileMutation = () => {
     mutationFn: lawyerUpdateProfile,
     onSuccess: () => {
       dialogClose();
-      queryClient.invalidateQueries(["getLawyerDetail"]);
+      queryClient.invalidateQueries(["getLawyerProfile"]);
       toast.success("Profile updated successfully");
     },
     onError: (error: IApiBaseResponse) => {

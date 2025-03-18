@@ -81,7 +81,9 @@ const CaseForm = ({
         ) : (
           <span className="flex items-center w-full">
             {" "}
+            <Button className="h-7 w-full" variant={"outline"}>
             <Edit size={15} className="mr-2 h-4 w-4" /> Edit
+            </Button>
           </span>
         )}
       </DialogTrigger>

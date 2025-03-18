@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,74 +16,175 @@ import {
   CircleUserRound,
   Eye,
   MapPin,
-  Search,
   Sparkles,
+  XCircle,
 } from "lucide-react";
 import { useGetLawyers } from "../api/api-queries";
 import Loader from "@/components/ui/loader";
 import NoDataFound from "@/components/shared/no-data-found";
 import ApiResponseError from "@/components/shared/api-response-error";
 import { Link } from "react-router-dom";
+import { env } from "@/config/env";
+import { EXPERTISE_AREAS } from "@/utils/constant";
 
 const LawyersList = () => {
   const { data, isLoading, isError } = useGetLawyers();
+
+  // State for filters
+  const [searchQuery, setSearchQuery] = useState("");
+  const [specializationFilter, setSpecializationFilter] = useState("");
+  const [experienceFilter, setExperienceFilter] = useState("");
+
+  // Filtered Lawyers List
+  let filteredLawyers = data?.data || [];
+
+  if (searchQuery) {
+    filteredLawyers = filteredLawyers.filter((lawyer) =>
+      lawyer.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+
+  if (specializationFilter) {
+    filteredLawyers = filteredLawyers.filter((lawyer) =>
+      lawyer.specialization?.includes(specializationFilter)
+    );
+  }
+
+  if (experienceFilter === "Low to High") {
+    filteredLawyers = [...filteredLawyers].sort(
+      (a, b) => (a.experience ?? 0) - (b.experience ?? 0)
+    );
+  } else if (experienceFilter === "High to Low") {
+    filteredLawyers = [...filteredLawyers].sort(
+      (a, b) => (b.experience ?? 0) - (a.experience ?? 0)
+    );
+  }
+
+  // Clear Filters Function
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSpecializationFilter("");
+    setExperienceFilter("");
+  };
 
   return (
     <>
       <h3 className="text-xl font-semibold">Lawyers</h3>
       <div className="flex gap-6 my-3">
         <div className="flex flex-col gap-2">
+          {/* Search Bar */}
           <div className="flex max-w-md w-[600px]">
             <Input
               type="text"
               placeholder="Search lawyers"
-              className="flex-1 border-gray-300 h-10 border-r-0 rounded-br-none rounded-tr-none focus:outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 border-gray-300 h-10 rounded-br-none rounded-tr-none focus:outline-none"
             />
-            <Button
-              variant="default"
-              className="bg-primary rounded-bl-none rounded-tl-none text-white h-10"
-            >
-              <Search className="h-4 w-4" />
-            </Button>
           </div>
 
+          {/* Filters */}
           <div className="flex items-center gap-2 w-full">
-            {["Region", "Sector", "Status"].map((filter) => (
-              <DropdownMenu key={filter}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="text-gray-700 border-gray-300 flex items-center gap-0"
+            {/* Specialization Filter */}
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="text-gray-700 border-gray-300 flex items-center gap-0"
+                >
+                  {specializationFilter || "Specialization"}{" "}
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white overflow-y-scroll h-96">
+                {EXPERTISE_AREAS.map((spec) => (
+                  <DropdownMenuItem
+                    key={spec.value}
+                    onClick={() => setSpecializationFilter(spec.value)}
                   >
-                    {filter} <ChevronDown className="h-4 w-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-48">
-                  <DropdownMenuItem>Option 1</DropdownMenuItem>
-                  <DropdownMenuItem>Option 2</DropdownMenuItem>
-                  <DropdownMenuItem>Option 3</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ))}
+                    {spec.label}
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuItem onClick={() => setSpecializationFilter("")}>
+                  All Specializations
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Experience Filter */}
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="text-gray-700 border-gray-300 flex items-center gap-0"
+                >
+                  {experienceFilter || "Experience"}{" "}
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white overflow-y-scroll h-96">
+                <DropdownMenuItem
+                  onClick={() => setExperienceFilter("Low to High")}
+                >
+                  Low to High
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setExperienceFilter("High to Low")}
+                >
+                  High to Low
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setExperienceFilter("")}>
+                  All Levels
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Clear Filters Button */}
+            {(specializationFilter || experienceFilter || searchQuery) && (
+              <Button
+                variant="outline"
+                className="text-red-600 border-gray-300 flex items-center gap-1"
+                onClick={clearFilters}
+              >
+                <XCircle size={16} /> Clear Filters
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Lawyers List */}
       {isLoading ? (
         <Loader />
-      ) : data?.data.length ? (
+      ) : !filteredLawyers.length ? (
+        isError ? (
+          <ApiResponseError />
+        ) : (
+          <NoDataFound />
+        )
+      ) : (
         <div className="grid grid-cols-3 gap-4">
-          {data.data.map((lawyer, index) => (
+          {filteredLawyers.map((lawyer, index) => (
             <Card
               key={lawyer.id || index}
-              className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden mt-4"
+              className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 w-full rounded-lg font-[sans-serif] overflow-hidden "
             >
               <CardHeader>
-              <Link to={`/lawyer/profile/${lawyer.id}`}>
-                <CardTitle className="text-lg font-medium items-center text-primary mb-2 flex gap-2">
-                  <CircleUserRound size={35} className="text-gray-500" />
-                  <span>{lawyer.name}</span>
-                </CardTitle>
+                <Link to={`/lawyer/profile/${lawyer.id}`}>
+                  <CardTitle className="text-lg font-medium items-center text-primary mb-2 flex gap-2">
+                    {lawyer?.profile_picture ? (
+                      <div className="w-10 h-10">
+                        <img
+                          src={`${env.VITE_APP_BASE_URL}/${lawyer.profile_picture}`}
+                          alt="Profile Picture"
+                          className="w-full h-full rounded-full border"
+                        />
+                      </div>
+                    ) : (
+                      <CircleUserRound className="text-gray-700" size={35} />
+                    )}
+                    <span>{lawyer.name}</span>
+                  </CardTitle>
                 </Link>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -162,10 +264,6 @@ const LawyersList = () => {
             </Card>
           ))}
         </div>
-      ) : isError ? (
-        <ApiResponseError />
-      ) : (
-        <NoDataFound />
       )}
     </>
   );

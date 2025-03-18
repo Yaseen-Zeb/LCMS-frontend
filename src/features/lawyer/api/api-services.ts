@@ -1,28 +1,26 @@
 import { api } from "@/lib/api-client";
-import { IApiBaseResponse, IBid, IUser } from "@/types";
+import { IApiBaseResponse, IBid, ICase, IUser } from "@/types";
 
 export const getLawyers = (): Promise<{
   data: IUser[];
 }> => {
-  return api.get(`/lawyer/list`);
+  return api.get(`/user/lawyer/list`);
 };
 
-export const getLawyerDetail = (
+export const getLawyerProfile = (
   id: number
 ): Promise<{
-  data: IUser;
+  data: {
+    lawyerInfo: IUser;
+    cases: { completedCases: ICase[]; pendingCases: ICase[] };
+    bids: IBid[];
+  };
 }> => {
-  return api.get(`/lawyer/profile/${id}`);
-};
-
-export const getMyBids = (): Promise<{
-  data: (IBid & { case: { id: number; title: string } })[];
-}> => {
-  return api.get(`/bid/my-bids`);
+  return api.get(`/user/lawyer/profile/${id}`);
 };
 
 export const lawyerUpdateProfile = (
-  data: Omit<IUser, "id" | "createdAt" | "updatedAt">
+  data: Omit<IUser, "id" | "createdAt" | "updatedAt" | "status">
 ): Promise<IApiBaseResponse> => {
-  return api.put(`/lawyer/profile/update`, data);
+  return api.put(`/user/lawyer/profile/update`, data);
 };

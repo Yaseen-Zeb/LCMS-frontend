@@ -164,7 +164,7 @@ export function CaseCarousel({
                         user?.role == "client" ? "grid-cols-1" : "grid-cols-2"
                       }`}
                     >
-                      {user?.role != "client" && (
+                      {user?.role == "lawyer" && (
                         <Button
                           className="flex gap-1 h-6 w-full"
                           variant={"outline"}

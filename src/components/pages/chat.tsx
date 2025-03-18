@@ -3,8 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MoreVertical } from "lucide-react";
 import NavBar from "../shared/nav-bar";
+import { useAuthContext } from "@/providers/auth-provider";
+import { Navigate } from "react-router-dom";
 
 export default function Chat() {
+  const {user} = useAuthContext()
+  if (!user) {
+    return <Navigate to={"/"}/>
+  }
   return (
     <>
       <NavBar />

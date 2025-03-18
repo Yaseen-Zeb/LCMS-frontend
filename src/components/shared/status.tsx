@@ -1,6 +1,8 @@
 import { Badge } from "../ui/badge";
 
 const Status = ({ status }: { status: string }) => {
+  console.log(status);
+  
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "open":
@@ -15,10 +17,12 @@ const Status = ({ status }: { status: string }) => {
         return "bg-blue-400";
       case "priority":
         return "bg-orange-400";
-      case "pending":
-        return "bg-orange-400";
+      case "inactive":
+        return "bg-red-400";
       case "urgent":
         return "bg-red-400";
+      case "active":
+        return "bg-green-400";
       default:
         return "bg-gray-400";
     }

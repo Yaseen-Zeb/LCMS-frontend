@@ -1,24 +1,25 @@
 import CaseForm from "@/features/case/components/case-form";
 import NoDataFound from "@/components/shared/no-data-found";
 import { ICase } from "@/types";
-import Status from "@/components/shared/status";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  BadgePercent,
+  Briefcase,
+  Eye,
+  MapPin,
+  Trash2,
+  TrendingUp,
+} from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import DeleteAlert from "@/components/shared/delete-alert";
 import { useState } from "react";
 import { useDeleteCase } from "@/features/case/api/api-queries";
 import { useAuthContext } from "@/providers/auth-provider";
 import formatDate from "@/utils/formatDate";
+import { Separator } from "@/components/ui/separator";
 
 const ClientCases = ({ cases }: { cases: ICase[] }) => {
-  const { user } = useAuthContext();
+  const { user, handleBidAuthModal } = useAuthContext();
   const { id } = useParams();
   const deleteCaseMutation = useDeleteCase();
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -36,53 +37,54 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
     });
   }
 
-  const renderDropdown = (caseItem: ICase, isMyProfile: boolean | null) => {
-    return (
-      <>
-        {isMyProfile ? (
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="rounded-full h-8 w-8 flex items-center justify-center"
-              >
-                <MoreHorizontal className="h-5 w-5 text-gray-500" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-32">
-              <Link to={`/case/detail/${caseItem.id}`}>
-                <DropdownMenuItem className="gap-0 text-primary">
-                  <Eye size={15} className="mr-2" /> View
-                </DropdownMenuItem>
-              </Link>
+  // const renderDropdown = (caseItem: ICase, isMyProfile: boolean | null) => {
+  //   return (
+  //     <>
+  //       {isMyProfile ? (
+  //         <DropdownMenu modal={false}>
+  //           <DropdownMenuTrigger asChild>
+  //             <Button
+  //               variant="ghost"
+  //               className="rounded-full h-8 w-8 flex items-center justify-center"
+  //             >
+  //               <MoreHorizontal className="h-5 w-5 text-gray-500" />
+  //             </Button>
+  //           </DropdownMenuTrigger>
+  //           <DropdownMenuContent className="w-32">
+  //             <Link to={`/case/detail/${caseItem.id}`}>
+  //               <DropdownMenuItem className="gap-0 text-primary">
+  //                 <Eye size={15} className="mr-2" /> View
+  //               </DropdownMenuItem>
+  //             </Link>
 
-              <DropdownMenuItem
-                className="text-primary"
-                onSelect={(e) => e.preventDefault()}
-              >
-                <CaseForm action="update" selectedRow={caseItem} />
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  setShowDeleteAlert(true);
-                  setItemToDelete(caseItem.id);
-                }}
-                className="gap-0 text-red-500"
-              >
-                <Trash2 size={15} className="mr-2" /> Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <Link to={`/case/detail/${caseItem.id}`}>
-            <span className="gap-1.5 text-primary flex items-center whitespace-nowrap">
-              <Eye size={15} className="" /> View Details
-            </span>
-          </Link>
-        )}
-      </>
-    );
-  };
+  //             <DropdownMenuItem
+  //               className="text-primary"
+  //               onSelect={(e) => e.preventDefault()}
+  //             >
+  //               <CaseForm action="update" selectedRow={caseItem} />
+  //             </DropdownMenuItem>
+  //             <DropdownMenuItem
+  //               onClick={() => {
+  //                 setShowDeleteAlert(true);
+  //                 setItemToDelete(caseItem.id);
+  //               }}
+  //               className="gap-0 text-red-500"
+  //             >
+  //               <Trash2 size={15} className="mr-2" /> Delete
+  //             </DropdownMenuItem>
+  //           </DropdownMenuContent>
+  //         </DropdownMenu>
+  //       ) : (
+  //         <Link to={`/case/detail/${caseItem.id}`}>
+  //           <span className="gap-1.5 text-primary flex items-center whitespace-nowrap">
+  //             <Eye size={15} className="" /> View Details
+  //           </span>
+  //         </Link>
+  //       )}
+  //     </>
+  //   );
+  // };
+
 
   return (
     <>
@@ -94,76 +96,185 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
       </div>
 
       {cases.length ? (
-        <div className="relative overflow-x-auto border rounded-sm">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-gray-600 font-semibold bg-gray-100">
-              <tr>
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Title
-                </td>
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Budget
-                </td>
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Budget Type
-                </td>
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Submitted bids
-                </td>
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Status
-                </td>
+        <div className="grid grid-cols-2 gap-4">
+          {cases?.map((caseItem) => (
+            <div
+              key={caseItem.id}
+              className="p-4 bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] rounded-lg border border-gray-200 hover:border-primary group"
+            >
+              <Link to={`/case/detail/${caseItem.id}`} className="w-full">
+                <h2 className="text-lg font-semibold text-gray-800 group-hover:text-primary group-hover:cursor-pointer min-h-[56px]">
+                  {caseItem.title.length < 57
+                    ? caseItem.title
+                    : caseItem.title.substring(0, 57) + " ..."}
+                </h2>
+              </Link>
 
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Posted Date
-                </td>
+              <div className="flex items-center text-gray-600 text-sm mt-2">
+                <span className="flex items-center gap-2">
+                  <Briefcase size={16} />
+                  Budget: {caseItem.budget_amount}$ <b>·</b>{" "}
+                  {caseItem.budget_type}
+                </span>
+              </div>
+              <div className="flex items-center text-gray-600 text-sm mt-2">
+                <span className="flex items-center gap-2">
+                  <TrendingUp size={16} />
+                  Submitted Bids: {caseItem.total_bids || 0}
+                </span>
+              </div>
+              <div className="flex items-center text-gray-600 text-sm mt-2">
+                <span className="flex items-start gap-2">
+                  <span>
+                    <MapPin size={16} className="mt-0.5" />
+                  </span>
+                  Location:{" "}
+                  {caseItem.location.length < 60
+                    ? caseItem.location
+                    : caseItem.location.substring(0, 60) + " ..."}
+                </span>
+              </div>
 
-                <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Actions
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              {cases.map((caseItem, index) => (
-                <tr key={caseItem.id || index}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {" "}
-                    {caseItem.title.length > 22 ? (
-                      <>
-                        {caseItem.title.substring(0, 22)}
-                        <b> ...</b>
-                      </>
-                    ) : (
-                      caseItem.title
-                    )}
-                  </td>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {caseItem.expertise_required.slice(0, 3).map((tag, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-semibold rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
 
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {caseItem.budget_amount
-                      ? `$${caseItem.budget_amount}`
-                      : "N/A"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {caseItem.budget_type || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {caseItem.total_bids ?? 0}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Status status={caseItem.status} />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {formatDate(caseItem.createdAt)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {renderDropdown(caseItem, isMyProfile)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              <p className="text-gray-500 text-sm mt-3">
+                Posted Date: {formatDate(caseItem.createdAt)} <b>·</b>{" "}
+                {caseItem.urgency}
+              </p>
+              <Separator className="my-3" />
+              {isMyProfile ? (
+                <div className="grid grid-cols-3 gap-2 items-end">
+                  <Link to={`/case/detail/${caseItem.id}`}>
+                    <Button
+                      variant={"outline"}
+                      className="gap-0 text-primary h-7 w-full"
+                    >
+                      <Eye size={15} className="mr-2" /> View
+                    </Button>
+                  </Link>
+
+                  <CaseForm action="update" selectedRow={caseItem} />
+
+                  <Button
+                    variant={"outline"}
+                    className="gap-0 text-primary h-7 w-full"
+                    onClick={() => {
+                      setShowDeleteAlert(true);
+                      setItemToDelete(caseItem.id);
+                    }}
+                  >
+                    <Trash2 size={15} className="mr-2" /> Delete
+                  </Button>
+                </div>
+              ) : (
+                <div
+                  className={`grid  justify-between text-sm gap-3 ${
+                    user && user?.role !== "lawyer" ? "grid-cols-1" : "grid-cols-2"
+                  }`}
+                >
+                  {(!user || user?.role == "lawyer" )&& (
+                    <Button
+                      className="flex gap-1 h-6 w-full"
+                      variant={"outline"}
+                      onClick={() => handleBidAuthModal(caseItem.id)}
+                    >
+                      <BadgePercent />
+                      Bid
+                    </Button>
+                  )}
+                  <Link to={`/case/detail/${caseItem.id}`} className="w-full">
+                    <Button
+                      className="flex gap-1 h-6 w-full"
+                      variant={"outline"}
+                    >
+                      <Eye />
+                      {user && user?.role !== "lawyer" ? "View Case Details" : "View"}
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       ) : (
+        // <div className="relative overflow-x-auto border rounded-sm">
+        //   <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        //     <thead className="text-gray-600 font-semibold bg-gray-100">
+        //       <tr>
+        //         <td scope="col" className="px-6 py-3 whitespace-nowrap">
+        //           Title
+        //         </td>
+        //         <td scope="col" className="px-6 py-3 whitespace-nowrap">
+        //           Budget
+        //         </td>
+        //         <td scope="col" className="px-6 py-3 whitespace-nowrap">
+        //           Budget Type
+        //         </td>
+        //         <td scope="col" className="px-6 py-3 whitespace-nowrap">
+        //           Submitted bids
+        //         </td>
+        //         <td scope="col" className="px-6 py-3 whitespace-nowrap">
+        //           Status
+        //         </td>
+
+        //         <td scope="col" className="px-6 py-3 whitespace-nowrap">
+        //           Posted Date
+        //         </td>
+
+        //         <td scope="col" className="px-6 py-3 whitespace-nowrap">
+        //           Actions
+        //         </td>
+        //       </tr>
+        //     </thead>
+        //     <tbody>
+        //       {cases.map((caseItem, index) => (
+        //         <tr key={caseItem.id || index}>
+        //           <td className="px-6 py-4 whitespace-nowrap">
+        //             {" "}
+        //             {caseItem.title.length > 22 ? (
+        //               <>
+        //                 {caseItem.title.substring(0, 22)}
+        //                 <b> ...</b>
+        //               </>
+        //             ) : (
+        //               caseItem.title
+        //             )}
+        //           </td>
+
+        //           <td className="px-6 py-4 whitespace-nowrap">
+        //             {caseItem.budget_amount
+        //               ? `$${caseItem.budget_amount}`
+        //               : "N/A"}
+        //           </td>
+        //           <td className="px-6 py-4 whitespace-nowrap">
+        //             {caseItem.budget_type || "N/A"}
+        //           </td>
+        //           <td className="px-6 py-4 whitespace-nowrap">
+        //             {caseItem.total_bids ?? 0}
+        //           </td>
+        //           <td className="px-6 py-4 whitespace-nowrap">
+        //             <Status status={caseItem.status} />
+        //           </td>
+        //           <td className="px-6 py-4 whitespace-nowrap">
+        //             {formatDate(caseItem.createdAt)}
+        //           </td>
+        //           <td className="px-6 py-4 whitespace-nowrap">
+        //             {renderDropdown(caseItem, isMyProfile)}
+        //           </td>
+        //         </tr>
+        //       ))}
+        //     </tbody>
+        //   </table>
+        // </div>
         <NoDataFound />
       )}
       {showDeleteAlert && (

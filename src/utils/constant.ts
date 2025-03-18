@@ -1,4 +1,4 @@
-export const ROLES = ["client", "lawyer"] as const;
+export const ROLES = ["client", "lawyer", "admin"] as const;
 
 export const EXPERTISE_AREAS = [
   { value: "Family Law", label: "Family Law" },

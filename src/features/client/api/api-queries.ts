@@ -17,9 +17,10 @@ export const useClientUpdateProfileMutation = () => {
   return useMutation({
     mutationFn: clientUpdateProfile,
     onSuccess: () => {
-      dialogClose();
+     
       queryClient.invalidateQueries(["getClientProfile"]);
       toast.success("Profile updated successfully");
+      dialogClose();
     },
     onError: (error: IApiBaseResponse) => {
       toast.error(error.message);
