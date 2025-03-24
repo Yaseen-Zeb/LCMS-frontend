@@ -34,7 +34,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-3 mb-6">
+     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
         <Card className="shadow-sm bg-white rounded-md ">
           <CardContent className="p-4 py-8 text-center">
             <p className="text-2xl font-semibold">
@@ -60,7 +60,7 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="shadow-sm bg-white rounded-md">
           <CardContent className="p-4">
             <h3 className="text-lg font-semibold mb-4 text-center">

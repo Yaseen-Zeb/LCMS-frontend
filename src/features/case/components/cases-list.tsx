@@ -25,6 +25,7 @@ import ApiResponseError from "@/components/shared/api-response-error";
 import { useAuthContext } from "@/providers/auth-provider";
 import formatDate from "@/utils/formatDate";
 import { CASE_CATEGORIES } from "@/utils/constant";
+import toast from "react-hot-toast";
 
 const CasesList = () => {
   const { user, handleBidAuthModal } = useAuthContext();
@@ -35,7 +36,6 @@ const CasesList = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [budgetFilter, setBudgetFilter] = useState("");
 
-  // Filtered Cases
   let filteredCases = data?.data || [];
 
   if (searchQuery) {
@@ -66,7 +66,6 @@ const CasesList = () => {
     );
   }
 
-  // Clear Filters
   const clearFilters = () => {
     setSearchQuery("");
     setCategoryFilter("");
@@ -77,29 +76,24 @@ const CasesList = () => {
   return (
     <>
       <h3 className="text-xl font-semibold">Legal Cases</h3>
-      <div className="flex gap-6 my-3">
-        <div className="flex flex-col gap-2">
-          {/* Search Input */}
-          <div className="flex max-w-md w-[600px]">
-            <Input
-              type="text"
-              placeholder="Search legal cases"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 border-gray-300 h-10 rounded-br-none rounded-tr-none focus:outline-none"
-            />
-          </div>
+      <div className="flex flex-col md:max-w-lg gap-2 lg:gap-6 my-3">
+        <div className="flex-1 flex flex-col gap-2">
+          <Input
+            type="text"
+            placeholder="Search legal cases"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border-gray-300 h-10"
+          />
 
-          {/* Filters */}
-          <div className="flex items-center gap-2 w-full">
-            {/* Case Category Filter */}
+          <div className="flex flex-wrap items-center gap-2 w-full">
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="text-gray-700 border-gray-300 flex items-center gap-0"
+                  className="text-gray-700 border-gray-300 flex items-center gap-1"
                 >
-                  {categoryFilter || "Case Category"}{" "}
+                  {categoryFilter || "Case Category"}
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
@@ -112,69 +106,37 @@ const CasesList = () => {
                     {category.label}
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuItem onClick={() => setCategoryFilter("")}>
-                  All Categories
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setCategoryFilter("")}>All Categories</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Status Filter */}
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="text-gray-700 border-gray-300 flex items-center gap-0"
-                >
-                  {statusFilter || "Status"}{" "}
-                  <ChevronDown className="h-4 w-4 ml-1" />
+                <Button variant="outline" className="text-gray-700 border-gray-300 flex items-center gap-1">
+                  {statusFilter || "Status"} <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
-                <DropdownMenuItem onClick={() => setStatusFilter("Open")}>
-                  Open
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter("Closed")}>
-                  Closed
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter("")}>
-                  All Status
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("Open")}>Open</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("Closed")}>Closed</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("")}>All Status</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Budget Filter */}
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="text-gray-700 border-gray-300 flex items-center gap-0"
-                >
-                  {budgetFilter || "Budget"}{" "}
-                  <ChevronDown className="h-4 w-4 ml-1" />
+                <Button variant="outline" className="text-gray-700 border-gray-300 flex items-center gap-1">
+                  {budgetFilter || "Budget"} <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
-                <DropdownMenuItem
-                  onClick={() => setBudgetFilter("Low to High")}
-                >
-                  Low to High
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setBudgetFilter("High to Low")}
-                >
-                  High to Low
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setBudgetFilter("")}>
-                  All Budgets
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setBudgetFilter("Low to High")}>Low to High</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setBudgetFilter("High to Low")}>High to Low</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setBudgetFilter("")}>All Budgets</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Clear Filters Button */}
-            {(categoryFilter ||
-              statusFilter ||
-              budgetFilter ||
-              searchQuery) && (
+            {(categoryFilter || statusFilter || budgetFilter || searchQuery) && (
               <Button
                 variant="outline"
                 className="text-red-600 border-gray-300 flex items-center gap-1"
@@ -187,53 +149,37 @@ const CasesList = () => {
         </div>
       </div>
 
-      {/* Case List */}
       {isLoading ? (
         <Loader />
       ) : !filteredCases.length ? (
-        isError ? (
-          <ApiResponseError />
-        ) : (
-          <NoDataFound />
-        )
+        isError ? <ApiResponseError /> : <NoDataFound />
       ) : (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredCases.map((caseItem) => (
             <div
               key={caseItem.id}
-              className="p-4 bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] rounded-lg border border-gray-200 hover:border-primary group"
+              className="p-4 bg-white shadow-md rounded-lg border border-gray-200 hover:border-primary group"
             >
-              <Link to={`/case/detail/${caseItem.id}`} className="w-full">
-                <h2 className="text-lg font-semibold text-gray-800 group-hover:text-primary group-hover:cursor-pointer min-h-[56px]">
+              <Link to={`/case/detail/${caseItem.id}`} className="w-full block">
+                <h2 className="text-lg font-semibold text-gray-800 group-hover:text-primary min-h-[56px]">
                   {caseItem.title.length < 57
                     ? caseItem.title
                     : caseItem.title.substring(0, 57) + " ..."}
                 </h2>
               </Link>
 
-              <div className="flex items-center text-gray-600 text-sm mt-2">
-                <span className="flex items-center gap-2">
+              <div className="text-sm text-gray-600 mt-2 space-y-1">
+                <div className="flex items-center gap-2">
                   <Briefcase size={16} />
-                  Budget: {caseItem.budget_amount}$ <b>·</b>{" "}
-                  {caseItem.budget_type}
-                </span>
-              </div>
-              <div className="flex items-center text-gray-600 text-sm mt-2">
-                <span className="flex items-center gap-2">
-                  <TrendingUp size={16} />
-                  Submitted Bids: {caseItem.total_bids || 0}
-                </span>
-              </div>
-              <div className="flex items-center text-gray-600 text-sm mt-2">
-                <span className="flex items-start gap-2">
-                  <span>
-                    <MapPin size={16} className="mt-0.5" />
-                  </span>
-                  Location:{" "}
-                  {caseItem.location.length < 60
-                    ? caseItem.location
-                    : caseItem.location.substring(0, 60) + " ..."}
-                </span>
+                  Budget: {caseItem.budget_amount}$ <b>·</b> {caseItem.budget_type}
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp size={16} /> Submitted Bids: {caseItem.total_bids || 0}
+                </div>
+                <div className="flex items-start gap-2">
+                  <MapPin size={16} className="mt-0.5" />
+                  Location: {caseItem.location.length < 60 ? caseItem.location : caseItem.location.substring(0, 60) + " ..."}
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-2 mt-4">
@@ -248,33 +194,33 @@ const CasesList = () => {
               </div>
 
               <p className="text-gray-500 text-sm mt-3">
-                Posted Date: {formatDate(caseItem.createdAt)} <b>·</b>{" "}
-                {caseItem.urgency}
+                Posted Date: {formatDate(caseItem.createdAt)} <b>·</b> {caseItem.urgency}
               </p>
+
               <Separator className="my-3" />
+
               <div
-                className={`grid  justify-between text-sm gap-3 ${
-                  user && user?.role !== "lawyer"
-                    ? "grid-cols-1"
-                    : "grid-cols-2"
-                }`}
+                className={`grid gap-3 text-sm ${user && user?.role !== "lawyer" ? "grid-cols-1" : "grid-cols-2"}`}
               >
-                {(!user || user?.role == "lawyer") && (
+                {(!user || user?.role === "lawyer") && (
                   <Button
                     className="flex gap-1 h-6 w-full"
-                    variant={"outline"}
-                    onClick={() => handleBidAuthModal(caseItem.id)}
+                    variant="outline"
+                    onClick={() => {
+                      if (caseItem.status === "open") {
+                        handleBidAuthModal(caseItem.id);
+                      } else {
+                        toast.success(`This case is currently ${caseItem.status} and bid cannot be submitted now.`);
+                      }
+                    }}
                   >
-                    <BadgePercent />
-                    Bid
+                    <BadgePercent /> Bid
                   </Button>
                 )}
                 <Link to={`/case/detail/${caseItem.id}`} className="w-full">
-                  <Button className="flex gap-1 h-6 w-full" variant={"outline"}>
+                  <Button className="flex gap-1 h-6 w-full" variant="outline">
                     <Eye />
-                    {user && user?.role !== "lawyer"
-                      ? "View Case Details"
-                      : "View"}
+                    {user && user?.role !== "lawyer" ? "View Case Details" : "View"}
                   </Button>
                 </Link>
               </div>

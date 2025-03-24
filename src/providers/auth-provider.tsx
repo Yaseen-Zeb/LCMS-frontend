@@ -4,12 +4,14 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { jwtDecode } from "jwt-decode";
 import BiddingForm from "@/features/bidding/components/bidding-form";
+import { api } from "@/lib/api-client";
 
 const AuthContext = createContext<IContext | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<IContextUser | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showBidModal, setShowBidModal] = useState(false);
@@ -18,10 +20,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
+  
     if (token) {
       try {
-        const decodedUser = jwtDecode<IContextUser>(token); // Decode JWT token
+        const decodedUser = jwtDecode<IContextUser>(token);
         setUser(decodedUser);
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -29,7 +31,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(null);
       }
     }
+  
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+  
+    const interval = setInterval(() => {
+      api.post("/user/ping");
+    }, 15000);
+  
+    return () => clearInterval(interval);
+  }, [user]);
+  
 
   const initializeAuth = () => {
     const token = localStorage.getItem("token") || "";
@@ -66,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   
 
   return (
-    <AuthContext.Provider value={{ user, initializeAuth, logout, requireAuth, handleBidAuthModal,bidCaseId }}>
+    <AuthContext.Provider value={{loading, user, initializeAuth, logout, requireAuth, handleBidAuthModal,bidCaseId }}>
       {children}
       <AuthDialog
         isAuthDialogOpen={showLoginModal}

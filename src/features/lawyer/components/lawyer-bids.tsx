@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { BookmarkCheck, Eye, MoreHorizontal } from "lucide-react";
+import { Eye, MoreHorizontal } from "lucide-react";
 import DeleteAlert from "@/components/shared/delete-alert";
 import { useState } from "react";
 import { useDeleteCase } from "@/features/case/api/api-queries";
@@ -19,15 +19,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
+import Status from "@/components/shared/status";
 
 const renderSheet = (bidItem: IBid) => {
   return (
@@ -55,6 +48,12 @@ const renderSheet = (bidItem: IBid) => {
             <p className="text-sm col-span-3">
               {formatDate(bidItem.createdAt)}
             </p>
+            <p className="text-sm col-span-1">
+              <span className="font-medium">Status:</span>
+            </p>
+            <p className="text-sm col-span-3">
+              <Status status={bidItem.bid_status} />
+            </p>
           </div>
         </div>
 
@@ -67,7 +66,7 @@ const renderSheet = (bidItem: IBid) => {
           <p className="text-sm col-span-1">
             <span className="font-medium">Required:</span>
           </p>
-          <p className="text-sm col-span-3 space-x-1 space-y-1 flex flex-wrap justify-start ">
+          <p className="text-sm col-span-3 space-x-1 space-y-1 flex flex-wrap justify-start">
             {bidItem.case.expertise_required.slice(0, 3).map((tag, i) => (
               <span
                 key={i}
@@ -119,25 +118,6 @@ const renderSheet = (bidItem: IBid) => {
   );
 };
 
-const acceptBidDialog = () => {
-  return (
-    <Dialog>
-      <DialogTrigger className="flex items-center gap-1.5">
-        <BookmarkCheck size={15} /> Accept
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
 const renderDropdown = (bidItem: IBid) => {
   return (
     <DropdownMenu modal={false}>
@@ -155,12 +135,6 @@ const renderDropdown = (bidItem: IBid) => {
           onSelect={(e) => e.preventDefault()}
         >
           {renderSheet(bidItem)}
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className=" text-green-500 gap-1.5"
-          onSelect={(e) => e.preventDefault()}
-        >
-          {acceptBidDialog()}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -185,7 +159,7 @@ const LawyerBids = ({ bids }: { bids: IBid[] }) => {
   return (
     <>
       <div className="flex justify-between items-center mb-3">
-        <h3 className="text-xl font-medium">Submitted Bids for my Cases</h3>
+        <h3 className="text-xl font-medium">My Submitted Bids for Cases</h3>
       </div>
 
       {bids.length ? (
@@ -201,7 +175,7 @@ const LawyerBids = ({ bids }: { bids: IBid[] }) => {
                 </td>
 
                 <td scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Submission Date
+                  Client Status
                 </td>
 
                 <td scope="col" className="px-6 py-3 whitespace-nowrap">
@@ -213,9 +187,9 @@ const LawyerBids = ({ bids }: { bids: IBid[] }) => {
               {bids.map((bidItem, index) => (
                 <tr key={bidItem.id || index}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {bidItem.description.length > 40 ? (
+                    {bidItem.description.length > 25 ? (
                       <>
-                        {bidItem.description.substring(0, 40)}
+                        {bidItem.description.substring(0, 25)}
                         <b> ...</b>
                       </>
                     ) : (
@@ -224,9 +198,9 @@ const LawyerBids = ({ bids }: { bids: IBid[] }) => {
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {bidItem.case.title.length > 40 ? (
+                    {bidItem.case.title.length > 25 ? (
                       <>
-                        {bidItem.case.title.substring(0, 40)}
+                        {bidItem.case.title.substring(0, 25)}
                         <b> ...</b>
                       </>
                     ) : (
@@ -234,8 +208,9 @@ const LawyerBids = ({ bids }: { bids: IBid[] }) => {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {formatDate(bidItem.createdAt)}
+                    <Status status={bidItem.bid_status} />
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     {renderDropdown(bidItem)}
                   </td>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   BadgePercent,
   Briefcase,
+  Edit,
   Eye,
   MapPin,
   Trash2,
@@ -17,6 +18,7 @@ import { useDeleteCase } from "@/features/case/api/api-queries";
 import { useAuthContext } from "@/providers/auth-provider";
 import formatDate from "@/utils/formatDate";
 import { Separator } from "@/components/ui/separator";
+import toast from "react-hot-toast";
 
 const ClientCases = ({ cases }: { cases: ICase[] }) => {
   const { user, handleBidAuthModal } = useAuthContext();
@@ -85,7 +87,6 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
   //   );
   // };
 
-
   return (
     <>
       <div className="flex justify-between items-center mb-3">
@@ -96,7 +97,7 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
       </div>
 
       {cases.length ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cases?.map((caseItem) => (
             <div
               key={caseItem.id}
@@ -152,7 +153,7 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
               </p>
               <Separator className="my-3" />
               {isMyProfile ? (
-                <div className="grid grid-cols-3 gap-2 items-end">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-end">
                   <Link to={`/case/detail/${caseItem.id}`}>
                     <Button
                       variant={"outline"}
@@ -162,14 +163,37 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
                     </Button>
                   </Link>
 
-                  <CaseForm action="update" selectedRow={caseItem} />
+                  {caseItem.status === "open" ? (
+                    <CaseForm action="update" selectedRow={caseItem} />
+                  ) : (
+                    <span className="flex items-center w-full">
+                      {" "}
+                      <Button
+                        className="h-7 w-full"
+                        variant={"outline"}
+                        onClick={() =>
+                          toast.error(
+                            `This case is currently ${caseItem.status} and cannot be updated`
+                          )
+                        }
+                      >
+                        <Edit size={15} className="mr-2 h-4 w-4" /> Edit
+                      </Button>
+                    </span>
+                  )}
 
                   <Button
                     variant={"outline"}
                     className="gap-0 text-primary h-7 w-full"
                     onClick={() => {
-                      setShowDeleteAlert(true);
-                      setItemToDelete(caseItem.id);
+                      if (caseItem.status === "open") {
+                        setShowDeleteAlert(true);
+                        setItemToDelete(caseItem.id);
+                      } else {
+                        toast.error(
+                          `This case is currently ${caseItem.status} and cannot be deleted`
+                        );
+                      }
                     }}
                   >
                     <Trash2 size={15} className="mr-2" /> Delete
@@ -178,14 +202,24 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
               ) : (
                 <div
                   className={`grid  justify-between text-sm gap-3 ${
-                    user && user?.role !== "lawyer" ? "grid-cols-1" : "grid-cols-2"
+                    user && user?.role !== "lawyer"
+                      ? "grid-cols-1"
+                      : "grid-cols-2"
                   }`}
                 >
-                  {(!user || user?.role == "lawyer" )&& (
+                  {(!user || user?.role == "lawyer") && (
                     <Button
                       className="flex gap-1 h-6 w-full"
                       variant={"outline"}
-                      onClick={() => handleBidAuthModal(caseItem.id)}
+                      onClick={() => {
+                        if (caseItem.status === "open") {
+                          handleBidAuthModal(caseItem.id);
+                        } else {
+                          toast.success(
+                            `This case is currently ${caseItem.status} and bid cannot be submitted now.`
+                          );
+                        }
+                      }}
                     >
                       <BadgePercent />
                       Bid
@@ -197,7 +231,9 @@ const ClientCases = ({ cases }: { cases: ICase[] }) => {
                       variant={"outline"}
                     >
                       <Eye />
-                      {user && user?.role !== "lawyer" ? "View Case Details" : "View"}
+                      {user && user?.role !== "lawyer"
+                        ? "View Case Details"
+                        : "View"}
                     </Button>
                   </Link>
                 </div>

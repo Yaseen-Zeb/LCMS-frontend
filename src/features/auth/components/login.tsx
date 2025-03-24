@@ -52,7 +52,7 @@ const Login = ({
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Email<span className="text-destructive">*</span></FormLabel>
               <FormControl>
                 <Input placeholder="e.g. user@example.com" {...field} />
               </FormControl>
@@ -66,7 +66,7 @@ const Login = ({
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Password<span className="text-destructive">*</span></FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input

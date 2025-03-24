@@ -1,5 +1,6 @@
 import { api } from "@/lib/api-client";
 import { IApiBaseResponse, IBid, ICase, IUser } from "@/types";
+import { ILawyerUpdateProfileForm } from "./schema";
 
 export const getLawyers = (): Promise<{
   data: IUser[];
@@ -20,7 +21,7 @@ export const getLawyerProfile = (
 };
 
 export const lawyerUpdateProfile = (
-  data: Omit<IUser, "id" | "createdAt" | "updatedAt" | "status">
+  data: ILawyerUpdateProfileForm
 ): Promise<IApiBaseResponse> => {
   return api.put(`/user/lawyer/profile/update`, data);
 };

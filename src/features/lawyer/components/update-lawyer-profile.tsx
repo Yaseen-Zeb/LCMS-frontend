@@ -26,6 +26,13 @@ import { IUser } from "@/types";
 import { useLawyerUpdateProfileMutation } from "../api/api-queries";
 import { EXPERTISE_AREAS } from "@/utils/constant";
 import { MultiSelect } from "@/components/ui/multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
   const form = useForm<ILawyerUpdateProfileForm>({
@@ -61,7 +68,9 @@ const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>
+                      Name<span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Enter your full name" {...field} />
                     </FormControl>
@@ -76,7 +85,9 @@ const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>
+                      Email<span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -95,7 +106,9 @@ const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
+                    <FormLabel>
+                      Phone Number<span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -113,7 +126,9 @@ const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                 name="specialization"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Specialization</FormLabel>
+                    <FormLabel>
+                      Specialization<span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <MultiSelect
                         options={EXPERTISE_AREAS}
@@ -134,7 +149,10 @@ const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                 name="experience"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Years of Experience</FormLabel>
+                    <FormLabel>
+                      Years of Experience
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -149,16 +167,111 @@ const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
 
               <FormField
                 control={form.control}
+                name="cnic"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      CNIC<span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., 3520112345671" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Gender<span className="text-destructive">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your gender" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="languages_spoken"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Languages Spoken
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., English, Urdu" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="website_or_social"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Website / LinkedIn / Portfolio</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="url"
+                        placeholder="https://linkedin.com/in/your-profile"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>
+                      Address<span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Enter your full address"
                         {...field}
                         rows={3}
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bio</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter bio" {...field}></Textarea>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

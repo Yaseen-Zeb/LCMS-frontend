@@ -31,18 +31,18 @@ const LawyerList = () => {
       ? false
       : null;
 
-  // Filtered Lawyers List
-  const filteredLawyers = lawyers?.data.filter((lawyer) => {
-    const matchesSearch =
-      `${lawyer.name} ${lawyer.email} ${lawyer.phone_number}`
-        .toLowerCase()
-        .includes(searchQueryLower);
-
-    const matchesStatus =
-      statusValue !== null ? lawyer.status === statusValue : true;
-
-    return matchesSearch || matchesStatus;
-  });
+      const filteredLawyers = lawyers?.data.filter((lawyer) => {
+        const textMatch =
+          lawyer.name.toLowerCase().includes(searchQueryLower) ||
+          lawyer.email.toLowerCase().includes(searchQueryLower) ||
+          lawyer.phone_number.toLowerCase().includes(searchQueryLower);
+      
+        const statusMatch =
+          statusValue === null || lawyer.status === statusValue;
+      
+        return textMatch && statusMatch;
+      });
+      
 
   return (
     <>
@@ -104,14 +104,24 @@ const LawyerList = () => {
               filteredLawyers.map((lawyer, index) => (
                 <tr key={lawyer.id || index}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Avatar>
-                      <AvatarImage
-                        src={`${env.VITE_APP_BASE_URL}/${lawyer.profile_picture}`}
-                        alt="Profile"
+                    <div className="relative w-10 h-10">
+                      <Avatar>
+                        <AvatarImage
+                          src={`${env.VITE_APP_BASE_URL}/${lawyer.profile_picture}`}
+                          alt="Profile"
+                        />
+                        <AvatarFallback>N/A</AvatarFallback>
+                      </Avatar>
+
+                      {/* Online/Offline Status Dot */}
+                      <span
+                        className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+                          lawyer?.is_online ? "bg-green-500" : "bg-gray-400"
+                        }`}
                       />
-                      <AvatarFallback>N/A</AvatarFallback>
-                    </Avatar>
+                    </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">{lawyer.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {lawyer.email}

@@ -10,7 +10,7 @@ import LawyerProfile from "@/features/lawyer/components/lawyer-profile";
 import PrivacyPolicy from "@/components/pages/privacy-policy";
 import AboutUs from "@/components/pages/about-us";
 import ContactUs from "@/features/contact-us/components/contact-us";
-import Chat from "@/components/pages/chat";
+import Chat from "@/features/chat/components/chat";
 import AuthLayout from "@/components/layouts/auth-layout";
 import Login from "@/features/admin/auth/components/login";
 import RequireAuth from "@/components/layouts/require-auth";

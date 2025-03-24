@@ -32,12 +32,13 @@ const ClientList = () => {
     const matchesSearch = `${client.name} ${client.email} ${client.phone_number}`
       .toLowerCase()
       .includes(searchQueryLower);
-
+  
     const matchesStatus =
-      statusValue !== null ? client.status === statusValue : true;
-
-    return matchesSearch || matchesStatus;
+      statusValue === null || client.status === statusValue;
+  
+    return matchesSearch && matchesStatus;
   });
+  
 
   return (
     <>

@@ -11,6 +11,7 @@ export type IContextUser = {
 };
 
 export type IContext = {
+  loading: boolean;
   user: IContextUser | null;
   initializeAuth: () => void;
   logout: () => void;
@@ -52,9 +53,18 @@ export type IUser = {
   address: string;
   specialization?: string[];
   experience?: number;
-  profile_picture?: string;
+  profile_picture: string;
   certificate?: string;
+  bio?: string;
+  gender?: string;
+  website_or_social?: string;
+  cnic: string;
+  city?: string;
+  profession: string;
+  languages_spoken: string;
   status: boolean;
+  last_seen: string;
+  is_online: boolean;
 } & BaseEntity;
 
 export type IBid = {
@@ -64,6 +74,24 @@ export type IBid = {
   case_id: number;
   case: ICase;
   lawyer: IUser;
+} & BaseEntity;
+
+export type IMessage = {
+  senderId: number;
+  receiverId: number;
+  message: string;
+  seen: boolean;
+} & BaseEntity;
+
+export type IReview = {
+  client_id: number;
+  lawyer_id: number;
+  message: string;
+  client: {
+    id: number;
+    name: string;
+    profile_picture: string;
+  };
 } & BaseEntity;
 
 export type IApiBaseResponse = {

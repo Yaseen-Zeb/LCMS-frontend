@@ -38,15 +38,15 @@ const Home = () => {
     <div className="text-gray-800 flex flex-col justify-center">
       <NavBar />
       <Header />
-      <div className="container m-auto pt-14">
-        <h3 className="text-center text-3xl font-medium mb-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-14">
+      <h3 className="text-center text-2xl sm:text-3xl font-medium mb-4">
           Cases You May Find Interesting
         </h3>
         {isCasesLoading ? (
           <Loader />
         ) : cases?.data.length ? (
-          <div className="grid gap-4 grid-cols-2 my-4 mb-10">
-            {cases.data.map((caseItem, i) => (
+<div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 my-4 mb-10">
+{cases.data.map((caseItem, i) => (
               <Link
                 key={i}
                 to={`/case/detail/${caseItem.id}`}
@@ -118,7 +118,7 @@ const Home = () => {
         {isLawyersLoading ? (
           <Loader />
         ) : lawyers?.data.length ? (
-          <div className="grid grid-cols-3 gap-4 mb-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-14">
           {lawyers.data.map((lawyer, index) => (
             <Card
               key={lawyer.id || index}
@@ -127,23 +127,31 @@ const Home = () => {
               <CardHeader>
                 <Link to={`/lawyer/profile/${lawyer.id}`}>
                   <CardTitle className="text-lg font-medium items-center text-primary mb-2 flex gap-2">
-                    {lawyer?.profile_picture ? (
-                      <div className="w-10 h-10">
-                        <img
-                          src={`${env.VITE_APP_BASE_URL}/${lawyer.profile_picture}`}
-                          alt="Profile Picture"
-                          className="w-full h-full rounded-full border"
-                        />
-                      </div>
-                    ) : (
-                      <CircleUserRound className="text-gray-700" size={35} />
-                    )}
+                  <div className="relative w-10 h-10">
+  {lawyer?.profile_picture ? (
+    <img
+      src={`${env.VITE_APP_BASE_URL}/${lawyer.profile_picture}`}
+      alt="Profile Picture"
+      className="w-full h-full rounded-full border"
+    />
+  ) : (
+    <CircleUserRound className="text-gray-700 w-full h-full rounded-full border p-1" />
+  )}
+
+  {/* Online/Offline Status Dot */}
+  <span
+    className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+      lawyer?.is_online ? "bg-green-500" : "bg-gray-400"
+    }`}
+  />
+</div>
+
                     <span>{lawyer.name}</span>
                   </CardTitle>
                 </Link>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Separator className="w-[300px] m-auto" />
+              <Separator className="max-w-full m-auto" />
 
                 {/* Specialization */}
                 <div className="text-sm flex gap-1">

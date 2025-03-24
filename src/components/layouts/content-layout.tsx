@@ -3,14 +3,12 @@ import NavBar from "../shared/nav-bar";
 
 const ContentLayout = () => {
   return (
-    <>
-      <div className="text-gray-800 flex flex-col justify-center">
-        <NavBar />
-        <div className="container m-auto py-8">
-          <Outlet />
-        </div>
-      </div>
-    </>
+    <div className="flex min-h-screen flex-col text-gray-800">
+      <NavBar />
+      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
+        <Outlet />
+      </main>
+    </div>
   );
 };
 

@@ -82,7 +82,7 @@ const CaseForm = ({
           <span className="flex items-center w-full">
             {" "}
             <Button className="h-7 w-full" variant={"outline"}>
-            <Edit size={15} className="mr-2 h-4 w-4" /> Edit
+              <Edit size={15} className="mr-2 h-4 w-4" /> Edit
             </Button>
           </span>
         )}
@@ -106,7 +106,9 @@ const CaseForm = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>
+                    Title<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Enter case title" {...field} />
                   </FormControl>
@@ -121,7 +123,9 @@ const CaseForm = ({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>
+                    Description<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Describe your case"
@@ -139,7 +143,9 @@ const CaseForm = ({
               name="case_category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Case Category</FormLabel>
+                  <FormLabel>
+                    Case Category<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
@@ -172,7 +178,10 @@ const CaseForm = ({
               name="expertise_required"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Required Expertise </FormLabel>
+                  <FormLabel>
+                    Required Expertise{" "}
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <MultiSelect
                       options={EXPERTISE_AREAS}
@@ -194,7 +203,9 @@ const CaseForm = ({
               name="urgency"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Urgency Level</FormLabel>
+                  <FormLabel>
+                    Urgency Level<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
@@ -204,9 +215,9 @@ const CaseForm = ({
                         <SelectValue placeholder={"Select urgency level"} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Standard">Standard</SelectItem>
-                        <SelectItem value="Priority">Priority</SelectItem>
-                        <SelectItem value="Urgent">Urgent</SelectItem>
+                        <SelectItem value="standard">Standard</SelectItem>
+                        <SelectItem value="priority">Priority</SelectItem>
+                        <SelectItem value="urgent">Urgent</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -220,7 +231,9 @@ const CaseForm = ({
               name="budget_type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Budget Type</FormLabel>
+                  <FormLabel>
+                    Budget Type<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
@@ -254,7 +267,9 @@ const CaseForm = ({
               name="budget_amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Budget in USD</FormLabel>
+                  <FormLabel>
+                    Budget in USD<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -273,7 +288,9 @@ const CaseForm = ({
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Location</FormLabel>
+                  <FormLabel>
+                    Location<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Enter location"

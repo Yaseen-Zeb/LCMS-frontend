@@ -48,7 +48,7 @@ const BiddingForm = ({
       <DialogContent className="sm:max-w-[500px]">
         <Form {...form}>
           <div className="flex flex-col">
-            <h2 className="text-lg font-semibold leading-none tracking-tight">
+            <h2 className="text-lg font-semibold leading-none tracking-tight mb-2">
               Submit Your Bid
             </h2>
             <span className="text-sm text-muted-foreground">
@@ -66,7 +66,7 @@ const BiddingForm = ({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Description<span className="text-destructive">*</span></FormLabel>
                   <FormControl>
                     <Textarea placeholder="" {...field} />
                   </FormControl>

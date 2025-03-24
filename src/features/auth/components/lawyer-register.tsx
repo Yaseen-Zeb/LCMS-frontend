@@ -24,13 +24,20 @@ import { useAuthContext } from "@/providers/auth-provider";
 import { api } from "@/lib/api-client";
 import { dialogClose } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const LawyerRegisterForm = ({
   setIsAuthDialogOpen,
 }: {
   setIsAuthDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [certificateFile, setCertificateFile] = useState<File | null>(null);
@@ -67,9 +74,16 @@ const LawyerRegisterForm = ({
     formData.append("password", data.password);
     formData.append("phone_number", data.phone_number);
     formData.append("address", data.address);
+    formData.append("bio", data.bio || "");
+    formData.append("experience", String(data.experience));
+    formData.append("specialization", JSON.stringify(data.specialization));
     formData.append("profile_picture", data.profile_picture);
     formData.append("certificate", data.certificate);
     formData.append("role", "lawyer");
+    formData.append("cnic", data.cnic);
+    formData.append("gender", data.gender);
+    formData.append("languages_spoken", data.languages_spoken);
+    formData.append("website_or_social", data.website_or_social ?? "");
 
     try {
       const response = await api.post("/auth/register", formData, {
@@ -104,7 +118,9 @@ const LawyerRegisterForm = ({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>
+                  Name<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your full name" {...field} />
                 </FormControl>
@@ -118,7 +134,9 @@ const LawyerRegisterForm = ({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>
+                  Email<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -136,7 +154,9 @@ const LawyerRegisterForm = ({
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>
+                  Password<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
@@ -168,7 +188,9 @@ const LawyerRegisterForm = ({
             name="phone_number"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel>
+                  Phone Number<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="text"
@@ -186,15 +208,115 @@ const LawyerRegisterForm = ({
             name="specialization"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Specialization</FormLabel>
+                <FormLabel>
+                  Specialization<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <MultiSelect
                     options={EXPERTISE_AREAS}
                     onValueChange={field.onChange}
                     defaultValue={field.value || []}
-                    placeholder={"Select required expertise"}
+                    placeholder={"Select your specialization"}
                     maxCount={2}
                     className="w-full"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="experience"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Experience<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Enter your experience"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="cnic"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  CNIC<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., 3520112345671" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Gender<span className="text-destructive">*</span>
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your gender" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="languages_spoken"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Languages Spoken<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., English, Urdu" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="website_or_social"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Website / LinkedIn / Portfolio</FormLabel>
+                <FormControl>
+                  <Input
+                    type="url"
+                    placeholder="https://linkedin.com/in/your-profile"
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -207,7 +329,9 @@ const LawyerRegisterForm = ({
             name="profile_picture"
             render={() => (
               <FormItem>
-                <FormLabel>Profile Picture</FormLabel>
+                <FormLabel>
+                  Profile Picture<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="file"
@@ -234,7 +358,9 @@ const LawyerRegisterForm = ({
             name="certificate"
             render={() => (
               <FormItem>
-                <FormLabel>Certificate</FormLabel>
+                <FormLabel>
+                  Certificate<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="file"
@@ -257,9 +383,25 @@ const LawyerRegisterForm = ({
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Addess</FormLabel>
+                <FormLabel>
+                  Addess<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <Textarea placeholder="Enter address" {...field}></Textarea>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="bio"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bio</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Enter bio" {...field}></Textarea>
                 </FormControl>
                 <FormMessage />
               </FormItem>

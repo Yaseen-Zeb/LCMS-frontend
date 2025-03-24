@@ -39,6 +39,6 @@ export const CASE_CATEGORIES = [
 ];
 
 export const BUDGET_TYPE = [
-  { value: "Fixed", label: "FIXED" },
-  { value: "Hourly", label: "HOURLY" },
+  { value: "fixed", label: "FIXED" },
+  { value: "hourly", label: "HOURLY" },
 ];
