@@ -88,10 +88,14 @@ const NavBar = () => {
 
         {/* Profile or Auth Actions */}
         {!isAdmin ? (
-          <div className="hidden md:flex items-center space-x-4">
+          <div
+            className={`${
+              menuOpen ? "flex" : "hidden"
+            } flex-col md:flex md:flex-row items-start md:items-center gap-2 md:gap-4 absolute md:static top-[calc(100%+8px)] left-0 w-full md:w-auto bg-nav md:bg-transparent px-6 md:px-0 py-2 md:py-0 z-20`}
+          >
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer">
+                <div className="flex items-center gap-2 cursor-pointer ml-3">
                   {user?.profile_picture ? (
                     <div className="w-9 h-9">
                       <img
@@ -153,7 +157,7 @@ const NavBar = () => {
         ) : (
           <Button
             variant="outline"
-            className="hidden md:block bg-transparent"
+            className={`${menuOpen ? "flex" : "hidden"} md:flex bg-transparent`}
             onClick={() => {
               logout();
               navigate("/admin/login");
