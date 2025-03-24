@@ -69,7 +69,9 @@ const ChangePassword = () => {
               name="oldPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Currect Password<span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>
+                    Currect Password<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
@@ -100,7 +102,9 @@ const ChangePassword = () => {
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password<span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>
+                    New Password<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
@@ -131,7 +135,9 @@ const ChangePassword = () => {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password<span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>
+                    Confirm Password<span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
@@ -157,15 +163,20 @@ const ChangePassword = () => {
                 </FormItem>
               )}
             />
-            <DialogFooter>
+            <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button
                 variant="outline"
                 type="button"
                 onClick={() => dialogClose()}
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={changePasswordMutation.isLoading}>
+              <Button
+                type="submit"
+                disabled={changePasswordMutation.isLoading}
+                className="w-full sm:w-auto"
+              >
                 Submit
               </Button>
             </DialogFooter>

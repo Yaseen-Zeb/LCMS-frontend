@@ -408,18 +408,24 @@ const LawyerRegisterForm = ({
             )}
           />
 
-          <div className="flex gap-2 justify-end items-center">
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => setIsAuthDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              Register
-            </Button>
-          </div>
+<div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+  <Button
+    variant="outline"
+    type="button"
+    onClick={() => setIsAuthDialogOpen(false)}
+    className="w-full sm:w-auto"
+  >
+    Cancel
+  </Button>
+  <Button
+    type="submit"
+    disabled={isLoading}
+    className="w-full sm:w-auto"
+  >
+    Register
+  </Button>
+</div>
+
         </form>
       </Form>
     </div>

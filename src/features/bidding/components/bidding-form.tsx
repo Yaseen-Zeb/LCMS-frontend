@@ -75,18 +75,24 @@ const BiddingForm = ({
               )}
             />
 
-            <DialogFooter>
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => setIsBidFormOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={bidMutation.isLoading}>
-                Submit
-              </Button>
-            </DialogFooter>
+<DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+  <Button
+    variant="outline"
+    type="button"
+    onClick={() => setIsBidFormOpen(false)}
+    className="w-full sm:w-auto"
+  >
+    Cancel
+  </Button>
+  <Button
+    type="submit"
+    disabled={bidMutation.isLoading}
+    className="w-full sm:w-auto"
+  >
+    Submit
+  </Button>
+</DialogFooter>
+
           </form>
         </Form>
       </DialogContent>

@@ -307,18 +307,24 @@ const acceptBidDialog = (
                 </FormItem>
               )}
             />
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => dialogClose()}>
-                Cancel
-              </Button>
-              <Button
-                disabled={acceptBidMutation.isLoading}
-                type="submit"
-                variant="default"
-              >
-                Accept and Start Chat
-              </Button>
-            </div>
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+  <Button
+    variant="outline"
+    onClick={() => dialogClose()}
+    className="w-full sm:w-auto"
+  >
+    Cancel
+  </Button>
+  <Button
+    disabled={acceptBidMutation.isLoading}
+    type="submit"
+    variant="default"
+    className="w-full sm:w-auto"
+  >
+    Accept and Start Chat
+  </Button>
+</div>
+
           </form>
         </Form>
       </DialogContent>

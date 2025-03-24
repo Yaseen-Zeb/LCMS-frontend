@@ -32,14 +32,16 @@ const Header = () => {
               <CaseForm action="add" />
             ) : (
               <Link to="/case/list">
-                <Button>Explore Cases</Button>
+                <Button className="!w-fit">Explore Cases</Button>
               </Link>
             )
           ) : (
             <>
-              <Button onClick={() => requireAuth()}>Post Case</Button>
+              <Button className="w-fit" onClick={() => requireAuth()}>
+                Post Case
+              </Button>
               <Link to="/case/list">
-                <Button variant="outline" className="bg-white text-black">
+                <Button variant="outline" className=" w-fit">
                   Explore Cases
                 </Button>
               </Link>

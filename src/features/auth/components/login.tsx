@@ -92,18 +92,24 @@ const Login = ({
             </FormItem>
           )}
         />
-        <DialogFooter>
-          <Button
-            variant="outline"
-            type="button"
-            onClick={() => setIsAuthDialogOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" disabled={signInMutation.isLoading}>
-            Login
-          </Button>
-        </DialogFooter>
+       <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+  <Button
+    variant="outline"
+    type="button"
+    onClick={() => setIsAuthDialogOpen(false)}
+    className="w-full sm:w-auto"
+  >
+    Cancel
+  </Button>
+  <Button
+    type="submit"
+    disabled={signInMutation.isLoading}
+    className="w-full sm:w-auto"
+  >
+    Login
+  </Button>
+</DialogFooter>
+
       </form>
       <p className="text-sm text-start mt-2">
         Don't have an account?{" "}

@@ -277,21 +277,24 @@ const UpdateLawyerProfile = ({ oldDetalil }: { oldDetalil: IUser }) => {
                   </FormItem>
                 )}
               />
-              <div className="flex gap-2 justify-end items-center">
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() => dialogClose()}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={lawyerUpdateProfileMutation.isLoading}
-                >
-                  Update
-                </Button>
-              </div>
+             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+  <Button
+    variant="outline"
+    type="button"
+    onClick={() => dialogClose()}
+    className="w-full sm:w-auto"
+  >
+    Cancel
+  </Button>
+  <Button
+    type="submit"
+    disabled={lawyerUpdateProfileMutation.isLoading}
+    className="w-full sm:w-auto"
+  >
+    Update
+  </Button>
+</div>
+
             </form>
           </Form>
         </div>
