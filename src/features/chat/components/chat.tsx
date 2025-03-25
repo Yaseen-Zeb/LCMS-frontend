@@ -29,6 +29,7 @@ import OngoingCases from "./ongoing-cases";
 export default function Chat() {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // <-- NEW
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -113,7 +114,8 @@ export default function Chat() {
 
   const renderPartnerList = () => {
     if (isPartnersLoading) return renderPartnersSkeleton();
-    if (isPartnerError) return <ApiResponseError msg={(partnerError as Error).message} />;
+    if (isPartnerError)
+      return <ApiResponseError msg={(partnerError as Error).message} />;
     if (!partners?.data?.length) {
       return (
         <p className="text-center text-gray-400 text-base">
@@ -124,7 +126,11 @@ export default function Chat() {
       );
     }
 
-    return partners.data.map((partner) => (
+    const filteredPartners = partners.data.filter((partner) =>
+      partner.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return filteredPartners.map((partner) => (
       <div
         key={partner.id}
         onClick={() => {
@@ -137,7 +143,9 @@ export default function Chat() {
       >
         <div className="relative inline-block">
           <Avatar>
-            <AvatarImage src={`${env.VITE_APP_BASE_URL}/${partner.profile_picture}`} />
+            <AvatarImage
+              src={`${env.VITE_APP_BASE_URL}/${partner.profile_picture}`}
+            />
             <AvatarFallback>{partner.name?.charAt(0)}</AvatarFallback>
           </Avatar>
           <span
@@ -155,9 +163,12 @@ export default function Chat() {
   };
 
   const renderMessages = () => {
-    if (isMessagesLoading) return <div className="space-y-4">{renderPartnersSkeleton()}</div>;
-    if (isMessageError) return <ApiResponseError msg={(messageError as Error).message} />;
-    if (!messages?.data?.length) return <p className="text-center">No messages yet</p>;
+    if (isMessagesLoading)
+      return <div className="space-y-4">{renderPartnersSkeleton()}</div>;
+    if (isMessageError)
+      return <ApiResponseError msg={(messageError as Error).message} />;
+    if (!messages?.data?.length)
+      return <p className="text-center">No messages yet</p>;
 
     return (
       <>
@@ -166,9 +177,15 @@ export default function Chat() {
           return (
             <div
               key={msg.id}
-              className={`flex gap-2 items-start ${isMine ? "justify-end" : ""}`}
+              className={`flex gap-2 items-start ${
+                isMine ? "justify-end" : ""
+              }`}
             >
-              <div className={`group flex flex-col gap-1 ${isMine ? "items-end" : "items-start"}`}>
+              <div
+                className={`group flex flex-col gap-1 ${
+                  isMine ? "items-end" : "items-start"
+                }`}
+              >
                 <div
                   className={`relative break-words overflow-hidden p-2 px-3 pr-6 rounded-2xl text-sm max-w-[80vw] md:max-w-xs ${
                     isMine
@@ -185,11 +202,19 @@ export default function Chat() {
                     <MessageActions message={msg} />
                   </div>
                 </div>
-                <div className={`flex items-center gap-2 text-xs text-gray-400 w-full ${isMine ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`flex items-center gap-2 text-xs text-gray-400 w-full ${
+                    isMine ? "justify-end" : "justify-start"
+                  }`}
+                >
                   <span>{formatTime(msg.createdAt)}</span>
                   {isMine && (
                     <span className="flex items-center gap-1 italic">
-                      {msg.seen ? <Eye className="w-4 h-4" /> : <Check className="w-4 h-4" />}
+                      {msg.seen ? (
+                        <Eye className="w-4 h-4" />
+                      ) : (
+                        <Check className="w-4 h-4" />
+                      )}
                     </span>
                   )}
                 </div>
@@ -225,7 +250,12 @@ export default function Chat() {
               <X className="h-5 w-5" />
             </Button>
           </div>
-          <Input placeholder="Search..." className="mb-4" />
+          <Input
+            placeholder="Search..."
+            className="mb-4"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // <-- SEARCH HERE
+          />
           <div className="overflow-auto h-[calc(100vh-160px)] space-y-1">
             {renderPartnerList()}
           </div>
