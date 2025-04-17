@@ -268,7 +268,7 @@ const CaseForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Budget in USD<span className="text-destructive">*</span>
+                    Budget in PKR<span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input

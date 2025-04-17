@@ -39,7 +39,7 @@ const WorkHistory = ({
                   <div className="flex items-center text-gray-600 text-sm mt-2">
                     <span className="flex items-center gap-2">
                       <Briefcase size={16} />
-                      Budget: {caseItem.budget_amount}$ <b>·</b>{" "}
+                      Budget: {caseItem.budget_amount} PKR <b>·</b>{" "}
                       {caseItem.budget_type}
                     </span>
                   </div>
@@ -106,7 +106,7 @@ const WorkHistory = ({
                     <div className="flex items-center text-gray-600 text-sm mt-2">
                       <span className="flex items-center gap-2">
                         <Briefcase size={16} />
-                        Budget: {caseItem.budget_amount}$ <b>·</b>{" "}
+                        Budget: {caseItem.budget_amount} PKR <b>·</b>{" "}
                         {caseItem.budget_type}
                       </span>
                     </div>

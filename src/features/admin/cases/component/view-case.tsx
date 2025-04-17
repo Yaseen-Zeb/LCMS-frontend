@@ -44,7 +44,7 @@ const ViewCase = ({ caseItem }: { caseItem: ICase }) => {
             <p className="text-sm col-span-1 font-medium">Budget:</p>
             <p className="text-sm col-span-3">
               {caseItem.budget_type === "fixed"
-                ? `$${caseItem.budget_amount}`
+                ? `PKR ${caseItem.budget_amount}`
                 : "Negotiable"}
             </p>
 

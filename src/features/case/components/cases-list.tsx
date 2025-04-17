@@ -106,37 +106,66 @@ const CasesList = () => {
                     {category.label}
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuItem onClick={() => setCategoryFilter("")}>All Categories</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setCategoryFilter("")}>
+                  All Categories
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="text-gray-700 border-gray-300 flex items-center gap-1">
-                  {statusFilter || "Status"} <ChevronDown className="h-4 w-4 ml-1" />
+                <Button
+                  variant="outline"
+                  className="text-gray-700 border-gray-300 flex items-center gap-1"
+                >
+                  {statusFilter || "Status"}{" "}
+                  <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
-                <DropdownMenuItem onClick={() => setStatusFilter("Open")}>Open</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter("Closed")}>Closed</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter("")}>All Status</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("Open")}>
+                  Open
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("Closed")}>
+                  Closed
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("")}>
+                  All Status
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="text-gray-700 border-gray-300 flex items-center gap-1">
-                  {budgetFilter || "Budget"} <ChevronDown className="h-4 w-4 ml-1" />
+                <Button
+                  variant="outline"
+                  className="text-gray-700 border-gray-300 flex items-center gap-1"
+                >
+                  {budgetFilter || "Budget"}{" "}
+                  <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white overflow-y-scroll max-h-96">
-                <DropdownMenuItem onClick={() => setBudgetFilter("Low to High")}>Low to High</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setBudgetFilter("High to Low")}>High to Low</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setBudgetFilter("")}>All Budgets</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setBudgetFilter("Low to High")}
+                >
+                  Low to High
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setBudgetFilter("High to Low")}
+                >
+                  High to Low
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setBudgetFilter("")}>
+                  All Budgets
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {(categoryFilter || statusFilter || budgetFilter || searchQuery) && (
+            {(categoryFilter ||
+              statusFilter ||
+              budgetFilter ||
+              searchQuery) && (
               <Button
                 variant="outline"
                 className="text-red-600 border-gray-300 flex items-center gap-1"
@@ -152,7 +181,11 @@ const CasesList = () => {
       {isLoading ? (
         <Loader />
       ) : !filteredCases.length ? (
-        isError ? <ApiResponseError /> : <NoDataFound />
+        isError ? (
+          <ApiResponseError />
+        ) : (
+          <NoDataFound />
+        )
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredCases.map((caseItem) => (
@@ -171,14 +204,19 @@ const CasesList = () => {
               <div className="text-sm text-gray-600 mt-2 space-y-1">
                 <div className="flex items-center gap-2">
                   <Briefcase size={16} />
-                  Budget: {caseItem.budget_amount}$ <b>·</b> {caseItem.budget_type}
+                  Budget: {caseItem.budget_amount} PKR<b>·</b>{" "}
+                  {caseItem.budget_type}
                 </div>
                 <div className="flex items-center gap-2">
-                  <TrendingUp size={16} /> Submitted Bids: {caseItem.total_bids || 0}
+                  <TrendingUp size={16} /> Submitted Bids:{" "}
+                  {caseItem.total_bids || 0}
                 </div>
                 <div className="flex items-start gap-2">
                   <MapPin size={16} className="mt-0.5" />
-                  Location: {caseItem.location.length < 60 ? caseItem.location : caseItem.location.substring(0, 60) + " ..."}
+                  Location:{" "}
+                  {caseItem.location.length < 60
+                    ? caseItem.location
+                    : caseItem.location.substring(0, 60) + " ..."}
                 </div>
               </div>
 
@@ -194,13 +232,18 @@ const CasesList = () => {
               </div>
 
               <p className="text-gray-500 text-sm mt-3">
-                Posted Date: {formatDate(caseItem.createdAt)} <b>·</b> {caseItem.urgency}
+                Posted Date: {formatDate(caseItem.createdAt)} <b>·</b>{" "}
+                {caseItem.urgency}
               </p>
 
               <Separator className="my-3" />
 
               <div
-                className={`grid gap-3 text-sm ${user && user?.role !== "lawyer" ? "grid-cols-1" : "grid-cols-2"}`}
+                className={`grid gap-3 text-sm ${
+                  user && user?.role !== "lawyer"
+                    ? "grid-cols-1"
+                    : "grid-cols-2"
+                }`}
               >
                 {(!user || user?.role === "lawyer") && (
                   <Button
@@ -210,7 +253,9 @@ const CasesList = () => {
                       if (caseItem.status === "open") {
                         handleBidAuthModal(caseItem.id);
                       } else {
-                        toast.success(`This case is currently ${caseItem.status} and bid cannot be submitted now.`);
+                        toast.success(
+                          `This case is currently ${caseItem.status} and bid cannot be submitted now.`
+                        );
                       }
                     }}
                   >
@@ -220,7 +265,9 @@ const CasesList = () => {
                 <Link to={`/case/detail/${caseItem.id}`} className="w-full">
                   <Button className="flex gap-1 h-6 w-full" variant="outline">
                     <Eye />
-                    {user && user?.role !== "lawyer" ? "View Case Details" : "View"}
+                    {user && user?.role !== "lawyer"
+                      ? "View Case Details"
+                      : "View"}
                   </Button>
                 </Link>
               </div>

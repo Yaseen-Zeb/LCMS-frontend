@@ -98,7 +98,7 @@ export function CaseCarousel({
                       <div className="flex items-center gap-1">
                         <DollarSign size={16} className="text-gray-500" />
                         <span>
-                          ${caseItem.budget_amount} {caseItem.budget_type}
+                          PKR {caseItem.budget_amount} {caseItem.budget_type}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">

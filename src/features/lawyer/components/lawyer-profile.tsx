@@ -34,7 +34,7 @@ const ClientProfile = () => {
       >
         {/* Sidebar */}
         <aside className="bg-white rounded-xl shadow-lg p-4 w-full h-96  col-span-full lg:col-span-2">
-        <div className="flex flex-col items-center relative">
+          <div className="flex flex-col items-center relative">
             <div className="relative">
               <div className="relative w-20 h-20">
                 <div className="relative w-20 h-20">
@@ -105,12 +105,11 @@ const ClientProfile = () => {
                 {isMyProfile ? "My Work History" : "Lawyer Work History"}
               </Button>
             </TabsTrigger>
-
-            <TabsTrigger
-              value="bids"
-              className="w-full text-left data-[state=active]:bg-blue-100 data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
-            >
-              {isMyProfile && (
+            {isMyProfile && (
+              <TabsTrigger
+                value="bids"
+                className="w-full text-left data-[state=active]:bg-blue-100 data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
+              >
                 <Button
                   variant="ghost"
                   className="w-full flex items-center justify-start gap-1.5 hover:bg-transparent"
@@ -118,8 +117,8 @@ const ClientProfile = () => {
                   <Tickets size={18} />
                   My Submitted Bids
                 </Button>
-              )}
-            </TabsTrigger>
+              </TabsTrigger>
+            )}
 
             <TabsTrigger
               value="reviews"

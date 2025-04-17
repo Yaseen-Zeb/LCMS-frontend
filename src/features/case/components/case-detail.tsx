@@ -71,7 +71,7 @@ const CaseDetail = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <span className="flex items-center gap-2 text-sm">
             <Receipt size={14} />
-            Budget: {caseDetail?.data.budget_amount}$ · {caseDetail?.data.budget_type}
+            Budget: {caseDetail?.data.budget_amount} PKR · {caseDetail?.data.budget_type}
           </span>
           <span className="flex items-center gap-2 text-sm">
             <TrendingUp size={14} />
