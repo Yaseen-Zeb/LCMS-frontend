@@ -16,7 +16,7 @@ export const getClientProfile = (
 
 export const clientUpdateProfile = (
   data: IClientUpdateProfileForm
-): Promise<IApiBaseResponse> => {
+): Promise<IApiBaseResponse & {data:{token:string}}> => {
   return api.put(`/user/client/profile/update`, data);
 };
 

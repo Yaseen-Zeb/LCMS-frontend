@@ -36,8 +36,8 @@ const renderSheet = (bidItem: IBid) => {
         </SheetHeader>
 
         {/* Bid Basic Details */}
-        <div className="p-2">
-          <div className="grid grid-cols-4 gap-2 p-2">
+        <div className="py-2">
+          <div className="grid grid-cols-4 gap-2">
             <p className="text-sm col-span-1">
               <span className="font-medium">Description:</span>
             </p>
@@ -58,7 +58,7 @@ const renderSheet = (bidItem: IBid) => {
         </div>
 
         <h3 className="text-lg font-medium col-span-4">Case Information</h3>
-        <div className="grid grid-cols-4 gap-2 p-2">
+        <div className="grid grid-cols-4 gap-2">
           <p className="text-sm col-span-1">
             <span className="font-medium">Title:</span>
           </p>

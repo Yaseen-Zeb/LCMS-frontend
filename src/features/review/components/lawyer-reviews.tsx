@@ -6,6 +6,9 @@ import { useGetLawyerReviews } from "../api/api-queries";
 import { useParams } from "react-router-dom";
 import NoDataFound from "@/components/shared/no-data-found";
 import { env } from "@/config/env";
+import { Star } from "lucide-react";
+
+const MAX_STARS = 5;
 
 const LawyerReviews = () => {
   const { id } = useParams();
@@ -27,8 +30,6 @@ const LawyerReviews = () => {
   if (!reviews.data.length) {
     return <NoDataFound />;
   }
-
-  console.log(reviews);
 
   return (
     <>
@@ -63,6 +64,21 @@ const LawyerReviews = () => {
                   {formatDate(review.createdAt)}
                 </span>
               </div>
+
+              {/* Stars */}
+              <div className="flex gap-1 mb-1">
+                {Array.from({ length: MAX_STARS }, (_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    strokeWidth={1.5}
+                    className={
+                      i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                    }
+                  />
+                ))}
+              </div>
+
               <p className="text-sm text-gray-700">{review.message}</p>
             </div>
           </div>

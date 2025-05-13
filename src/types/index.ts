@@ -87,6 +87,7 @@ export type IReview = {
   client_id: number;
   lawyer_id: number;
   message: string;
+  rating: number;
   client: {
     id: number;
     name: string;

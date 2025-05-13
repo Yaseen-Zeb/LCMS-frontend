@@ -31,8 +31,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-muted">
-      <div className="bg-card w-full max-w-md p-6 sm:p-8 rounded-lg shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] space-y-6">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-muted w-[450px]">
+      <div className="bg-card w-full  p-4 rounded-lg shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] space-y-6">
         <div className="grid place-items-center">
           <img src={logo} alt="LCMS Logo" className="w-20" />
           <h1 className="text-lg font-semibold text-balance text-center">

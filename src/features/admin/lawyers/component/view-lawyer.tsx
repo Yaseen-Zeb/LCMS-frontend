@@ -51,7 +51,7 @@ const ViewLawyer = ({ lawyer }: { lawyer: IUser }) => {
         </div>
 
         {/* Lawyer Details */}
-        <div className="p-2">
+        <div className="py-2">
           <div className="grid grid-cols-4 gap-1 space-y-2">
             <p className="text-sm col-span-1 font-medium mt-2">Name:</p>
             <p className="text-sm col-span-3">{getValue(lawyer.name)}</p>

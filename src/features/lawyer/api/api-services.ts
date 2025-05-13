@@ -22,6 +22,6 @@ export const getLawyerProfile = (
 
 export const lawyerUpdateProfile = (
   data: ILawyerUpdateProfileForm
-): Promise<IApiBaseResponse> => {
+): Promise<IApiBaseResponse & {data:{token:string}}> => {
   return api.put(`/user/lawyer/profile/update`, data);
 };

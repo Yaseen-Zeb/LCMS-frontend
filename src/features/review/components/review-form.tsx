@@ -15,10 +15,12 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import StarRating from "@/components/ui/rating-stars";
 
 const ReviewForm = ({
   case_id,
@@ -67,12 +69,31 @@ const ReviewForm = ({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
+                name="rating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rating for lawyer <span className="text-destructive">*</span></FormLabel>
+                    <FormControl>
+                      <StarRating
+                        maxRating={5}
+                        onSetRating={field.onChange}
+                        defaultRating={field.value}
+                        className="mt-1"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="message"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Review for lawyer <span className="text-destructive">*</span></FormLabel>
                     <FormControl>
                       <Textarea
-                      onKeyDown={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
                         rows={4}
                         placeholder="Write your review here..."
                         {...field}

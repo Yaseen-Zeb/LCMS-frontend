@@ -22,7 +22,7 @@ const ViewCase = ({ caseItem }: { caseItem: ICase }) => {
           <SheetTitle className="text-xl font-medium">Case Details</SheetTitle>
         </SheetHeader>
 
-        <div className="p-2">
+        <div className="py-2">
           <div className="grid grid-cols-4 gap-2 space-y-2">
             <p className="text-sm col-span-1 font-medium mt-2">Title:</p>
             <p className="text-sm col-span-3">{caseItem.title}</p>

@@ -3,6 +3,7 @@ import { acceptBid, clientUpdateProfile, getClientProfile, updateBidStatus } fro
 import { IApiBaseResponse } from "@/types";
 import { dialogClose } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import { useAuthContext } from "@/providers/auth-provider";
 
 export const useGetClientProfile = (id: number) => {
   return useQuery({
@@ -13,10 +14,12 @@ export const useGetClientProfile = (id: number) => {
 
 export const useClientUpdateProfileMutation = () => {
   const queryClient = useQueryClient();
-
+const {initializeAuth} = useAuthContext()
   return useMutation({
     mutationFn: clientUpdateProfile,
-    onSuccess: () => {
+    onSuccess: (res) => {
+      localStorage.setItem("token",res.data.token)
+      initializeAuth()
       queryClient.invalidateQueries(["getClientProfile"]);
       toast.success("Profile updated successfully");
       dialogClose();

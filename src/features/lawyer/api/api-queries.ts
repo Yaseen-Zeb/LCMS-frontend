@@ -7,6 +7,7 @@ import {
 import { dialogClose } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import { IApiBaseResponse } from "@/types";
+import { useAuthContext } from "@/providers/auth-provider";
 
 export const useGetLawyers = () => {
   return useQuery({
@@ -24,10 +25,13 @@ export const useGetLawyerProfile = (id: number) => {
 
 export const useLawyerUpdateProfileMutation = () => {
   const queryClient = useQueryClient();
+ const {initializeAuth} = useAuthContext()
 
   return useMutation({
     mutationFn: lawyerUpdateProfile,
-    onSuccess: () => {
+    onSuccess: (res) => {
+      localStorage.setItem("token",res.data.token)
+      initializeAuth()
       dialogClose();
       queryClient.invalidateQueries(["getLawyerProfile"]);
       toast.success("Profile updated successfully");
